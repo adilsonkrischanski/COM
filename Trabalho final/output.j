@@ -1,9 +1,9 @@
-
 .source outfileName
 .class public test
 .super java/lang/Object
 
-.method public <init>()V /naload_0 /ninvokenonvirtual java/lang/Object/<init>()V
+.method public <init>()V /naload_0
+invokenonvirtual java/lang/Object/<init>()V
 return
 .end method
 

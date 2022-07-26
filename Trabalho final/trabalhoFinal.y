@@ -224,7 +224,7 @@ void generateHeader()
 	fprintf(file,".class public test\n.super java/lang/Object\n\n"); //code for defining class
 	
     fprintf(file,".method public <init>()V /n");
-	fprintf(file,"aload_0 /n");
+	fprintf(file,"aload_0\n");
 	fprintf(file,"invokenonvirtual java/lang/Object/<init>()V\n");
 	fprintf(file,"return\n");
 	fprintf(file,".end method\n\n");

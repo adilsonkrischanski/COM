@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jul 26 09:46:47 2022
+# Make data base, printed on Tue Jul 26 10:36:27 2022
 
 # Variables
 
@@ -71,7 +71,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-91049f59-bcf1-4dff-9371-70b6a23b6c97.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-5deba863-f0e9-4407-9c78-7eb744b9e82b.sock
 # environment
 LC_NAME = pt_BR.UTF-8
 # environment
@@ -243,7 +243,7 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 9748
+VSCODE_PID = 12430
 # variable set hash-table stats:
 # Load=117/1024=11%, Rehash=0, Collisions=15/145=10%
 
@@ -277,6 +277,7 @@ all:
 # automatic
 # * := 
 # automatic
+ 
 # + := 
 # automatic
 # | := 
@@ -286,7 +287,6 @@ all:
 # ^ := 
 # automatic
 # ? := 
- 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=1/11=9%
 #  recipe to execute (from 'makefile', line 2):
@@ -377,6 +377,6 @@ exec: all
 # strcache performance: lookups = 44 / hit rate = 43%
 # hash-table stats:
 # Load=25/8192=0%, Rehash=0, Collisions=1/44=2%
-# Finished Make data base on Tue Jul 26 09:46:47 2022
+# Finished Make data base on Tue Jul 26 10:36:27 2022
 
  
