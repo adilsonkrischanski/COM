@@ -1,7 +1,7 @@
-make --dry-run --keep-going --print-directory
-make: Entering directory '/home/adilson/Udesc/COM/trabalho final'
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/adilson/Udesc/COM/COM/Trabalho final'
 flex trabalhoFinal.lex
 bison -y -d trabalhoFinal.y
 gcc  lex.yy.c y.tab.c -o trabalhoFinal.out
-make: Leaving directory '/home/adilson/Udesc/COM/trabalho final'
+make: Leaving directory '/home/adilson/Udesc/COM/COM/Trabalho final'
  

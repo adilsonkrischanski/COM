@@ -89,9 +89,10 @@ char *fileName = "output.j";
 FILE *file;
 
 void generateHeader();
+void generateFooter();
 
 
-#line 95 "y.tab.c"
+#line 96 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -221,7 +222,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 26 "trabalhoFinal.y"
+#line 27 "trabalhoFinal.y"
 
     int ival;
     float fval;
@@ -230,7 +231,7 @@ union YYSTYPE
     char * aopval;
 
 
-#line 234 "y.tab.c"
+#line 235 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -609,12 +610,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    63,    63,    67,    70,    70,    75,    76,    77,    80,
-      82,    83,    84,    87,    88,    89,    90,    91,    94,    95,
-      98,   101,   104,   105,   108,   111,   114,   115,   118,   119,
-     122,   123,   124,   127,   128,   129,   132,   133,   134,   135,
-     138,   139,   142,   145,   146,   149,   152,   153,   154,   157,
-     162
+       0,    64,    64,    68,    71,    71,    76,    77,    78,    81,
+      83,    84,    85,    88,    89,    90,    91,    92,    95,    96,
+      99,   102,   105,   106,   109,   112,   115,   116,   119,   120,
+     123,   124,   125,   128,   129,   130,   133,   134,   135,   136,
+     139,   140,   143,   146,   147,   150,   153,   154,   155,   158,
+     163
 };
 #endif
 
@@ -1478,295 +1479,301 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 63 "trabalhoFinal.y"
-                                                     {generateHeader();printf("Programa\n");}
-#line 1484 "y.tab.c"
+#line 64 "trabalhoFinal.y"
+                                                     {printf("Programa\n");}
+#line 1485 "y.tab.c"
     break;
 
   case 3:
-#line 67 "trabalhoFinal.y"
+#line 68 "trabalhoFinal.y"
                                          {printf("corpo\n");}
-#line 1490 "y.tab.c"
+#line 1491 "y.tab.c"
     break;
 
   case 4:
-#line 70 "trabalhoFinal.y"
-                              {printf("comando composto\n");}
-#line 1496 "y.tab.c"
+#line 71 "trabalhoFinal.y"
+                              {generateFooter();printf("comando composto\n");}
+#line 1497 "y.tab.c"
+    break;
+
+  case 5:
+#line 73 "trabalhoFinal.y"
+                             {generateHeader();}
+#line 1503 "y.tab.c"
     break;
 
   case 6:
-#line 75 "trabalhoFinal.y"
+#line 76 "trabalhoFinal.y"
                                                            {printf("declaracoes\n");}
-#line 1502 "y.tab.c"
+#line 1509 "y.tab.c"
     break;
 
   case 7:
-#line 76 "trabalhoFinal.y"
+#line 77 "trabalhoFinal.y"
                                                            {printf("declaracoes\n");}
-#line 1508 "y.tab.c"
+#line 1515 "y.tab.c"
     break;
 
   case 8:
-#line 77 "trabalhoFinal.y"
+#line 78 "trabalhoFinal.y"
                                                            {printf("declaracoes\n");}
-#line 1514 "y.tab.c"
+#line 1521 "y.tab.c"
     break;
 
   case 9:
-#line 80 "trabalhoFinal.y"
+#line 81 "trabalhoFinal.y"
                                                            {printf("declaracao de variavel\n");}
-#line 1520 "y.tab.c"
+#line 1527 "y.tab.c"
     break;
 
   case 10:
-#line 82 "trabalhoFinal.y"
+#line 83 "trabalhoFinal.y"
                                                            {printf("lista de comandos\n");}
-#line 1526 "y.tab.c"
+#line 1533 "y.tab.c"
     break;
 
   case 11:
-#line 83 "trabalhoFinal.y"
+#line 84 "trabalhoFinal.y"
                                                            {printf("lista de comandos\n");}
-#line 1532 "y.tab.c"
+#line 1539 "y.tab.c"
     break;
 
   case 12:
-#line 84 "trabalhoFinal.y"
+#line 85 "trabalhoFinal.y"
                                                            {printf("lista de comandos\n");}
-#line 1538 "y.tab.c"
+#line 1545 "y.tab.c"
     break;
 
   case 13:
-#line 87 "trabalhoFinal.y"
+#line 88 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1544 "y.tab.c"
+#line 1551 "y.tab.c"
     break;
 
   case 14:
-#line 88 "trabalhoFinal.y"
+#line 89 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1550 "y.tab.c"
+#line 1557 "y.tab.c"
     break;
 
   case 15:
-#line 89 "trabalhoFinal.y"
+#line 90 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1556 "y.tab.c"
+#line 1563 "y.tab.c"
     break;
 
   case 16:
-#line 90 "trabalhoFinal.y"
+#line 91 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1562 "y.tab.c"
+#line 1569 "y.tab.c"
     break;
 
   case 17:
-#line 91 "trabalhoFinal.y"
+#line 92 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1568 "y.tab.c"
+#line 1575 "y.tab.c"
     break;
 
   case 18:
-#line 94 "trabalhoFinal.y"
+#line 95 "trabalhoFinal.y"
                                                          {printf("lista ids\n");}
-#line 1574 "y.tab.c"
+#line 1581 "y.tab.c"
     break;
 
   case 19:
-#line 95 "trabalhoFinal.y"
+#line 96 "trabalhoFinal.y"
                                                          {printf("lista ids\n");}
-#line 1580 "y.tab.c"
+#line 1587 "y.tab.c"
     break;
 
   case 20:
-#line 98 "trabalhoFinal.y"
+#line 99 "trabalhoFinal.y"
                                                          {printf("atribuicao\n");}
-#line 1586 "y.tab.c"
+#line 1593 "y.tab.c"
     break;
 
   case 21:
-#line 101 "trabalhoFinal.y"
+#line 102 "trabalhoFinal.y"
                                                                 {printf("condicional\n");}
-#line 1592 "y.tab.c"
+#line 1599 "y.tab.c"
     break;
 
   case 22:
-#line 104 "trabalhoFinal.y"
+#line 105 "trabalhoFinal.y"
                                                                     {printf("condicionalAUX\n");}
-#line 1598 "y.tab.c"
+#line 1605 "y.tab.c"
     break;
 
   case 23:
-#line 105 "trabalhoFinal.y"
+#line 106 "trabalhoFinal.y"
                                                              {printf("condicionalAUX\n");}
-#line 1604 "y.tab.c"
+#line 1611 "y.tab.c"
     break;
 
   case 24:
-#line 108 "trabalhoFinal.y"
+#line 109 "trabalhoFinal.y"
                                                                                             {printf("comando While\n");}
-#line 1610 "y.tab.c"
+#line 1617 "y.tab.c"
     break;
 
   case 25:
-#line 111 "trabalhoFinal.y"
+#line 112 "trabalhoFinal.y"
                                                                                                                                                              {printf("comando For\n");}
-#line 1616 "y.tab.c"
+#line 1623 "y.tab.c"
     break;
 
   case 26:
-#line 114 "trabalhoFinal.y"
+#line 115 "trabalhoFinal.y"
                                                          {printf("expressao\n");}
-#line 1622 "y.tab.c"
+#line 1629 "y.tab.c"
     break;
 
   case 27:
-#line 115 "trabalhoFinal.y"
+#line 116 "trabalhoFinal.y"
                                                          {printf("expressao\n");}
-#line 1628 "y.tab.c"
+#line 1635 "y.tab.c"
     break;
 
   case 28:
-#line 118 "trabalhoFinal.y"
+#line 119 "trabalhoFinal.y"
                                                     {printf("EXP SIMPLES \n");}
-#line 1634 "y.tab.c"
+#line 1641 "y.tab.c"
     break;
 
   case 29:
-#line 119 "trabalhoFinal.y"
+#line 120 "trabalhoFinal.y"
                                                     {printf("EXP SIMPLES \n");}
-#line 1640 "y.tab.c"
+#line 1647 "y.tab.c"
     break;
 
   case 30:
-#line 122 "trabalhoFinal.y"
+#line 123 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1646 "y.tab.c"
+#line 1653 "y.tab.c"
     break;
 
   case 31:
-#line 123 "trabalhoFinal.y"
+#line 124 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1652 "y.tab.c"
+#line 1659 "y.tab.c"
     break;
 
   case 32:
-#line 124 "trabalhoFinal.y"
+#line 125 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1658 "y.tab.c"
+#line 1665 "y.tab.c"
     break;
 
   case 33:
-#line 127 "trabalhoFinal.y"
+#line 128 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1664 "y.tab.c"
+#line 1671 "y.tab.c"
     break;
 
   case 34:
-#line 128 "trabalhoFinal.y"
+#line 129 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1670 "y.tab.c"
+#line 1677 "y.tab.c"
     break;
 
   case 35:
-#line 129 "trabalhoFinal.y"
+#line 130 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1676 "y.tab.c"
+#line 1683 "y.tab.c"
     break;
 
   case 36:
-#line 132 "trabalhoFinal.y"
+#line 133 "trabalhoFinal.y"
                                                                        {printf("TIPO \n");}
-#line 1682 "y.tab.c"
+#line 1689 "y.tab.c"
     break;
 
   case 37:
-#line 133 "trabalhoFinal.y"
+#line 134 "trabalhoFinal.y"
                                                                        {printf("TIPO \n");}
-#line 1688 "y.tab.c"
+#line 1695 "y.tab.c"
     break;
 
   case 38:
-#line 134 "trabalhoFinal.y"
+#line 135 "trabalhoFinal.y"
                                                                        {printf("TIPO \n");}
-#line 1694 "y.tab.c"
+#line 1701 "y.tab.c"
     break;
 
   case 39:
-#line 135 "trabalhoFinal.y"
+#line 136 "trabalhoFinal.y"
                                                                        {printf("TIPO \n");}
-#line 1700 "y.tab.c"
+#line 1707 "y.tab.c"
     break;
 
   case 40:
-#line 138 "trabalhoFinal.y"
+#line 139 "trabalhoFinal.y"
                          {printf("TERMO\n");}
-#line 1706 "y.tab.c"
+#line 1713 "y.tab.c"
     break;
 
   case 41:
-#line 139 "trabalhoFinal.y"
+#line 140 "trabalhoFinal.y"
                          {printf("TERMO - FATOR\n");}
-#line 1712 "y.tab.c"
+#line 1719 "y.tab.c"
     break;
 
   case 42:
-#line 142 "trabalhoFinal.y"
+#line 143 "trabalhoFinal.y"
                                                                           {printf("agregado Aux \n");}
-#line 1718 "y.tab.c"
+#line 1725 "y.tab.c"
     break;
 
   case 43:
-#line 145 "trabalhoFinal.y"
+#line 146 "trabalhoFinal.y"
                     {printf("TIPO \n");}
-#line 1724 "y.tab.c"
+#line 1731 "y.tab.c"
     break;
 
   case 44:
-#line 146 "trabalhoFinal.y"
+#line 147 "trabalhoFinal.y"
                    {printf("TIPO \n");}
-#line 1730 "y.tab.c"
+#line 1737 "y.tab.c"
     break;
 
   case 45:
-#line 149 "trabalhoFinal.y"
+#line 150 "trabalhoFinal.y"
                                                    {printf("TIPO AGREGADO\n");}
-#line 1736 "y.tab.c"
+#line 1743 "y.tab.c"
     break;
 
   case 46:
-#line 152 "trabalhoFinal.y"
+#line 153 "trabalhoFinal.y"
                    {printf("TIPO INT\n");}
-#line 1742 "y.tab.c"
+#line 1749 "y.tab.c"
     break;
 
   case 47:
-#line 153 "trabalhoFinal.y"
+#line 154 "trabalhoFinal.y"
                    {printf("TIPO REAL\n");}
-#line 1748 "y.tab.c"
+#line 1755 "y.tab.c"
     break;
 
   case 48:
-#line 154 "trabalhoFinal.y"
+#line 155 "trabalhoFinal.y"
                    {printf("TIPO BOOL\n");}
-#line 1754 "y.tab.c"
+#line 1761 "y.tab.c"
     break;
 
   case 49:
-#line 157 "trabalhoFinal.y"
+#line 158 "trabalhoFinal.y"
                              {printf("Variavel\n");}
-#line 1760 "y.tab.c"
+#line 1767 "y.tab.c"
     break;
 
   case 50:
-#line 162 "trabalhoFinal.y"
+#line 163 "trabalhoFinal.y"
        {printf("Vazio\n");}
-#line 1766 "y.tab.c"
+#line 1773 "y.tab.c"
     break;
 
 
-#line 1770 "y.tab.c"
+#line 1777 "y.tab.c"
 
       default: break;
     }
@@ -1998,7 +2005,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 166 "trabalhoFinal.y"
+#line 167 "trabalhoFinal.y"
 
 
 // int main() {
@@ -2054,17 +2061,18 @@ void yyerror(const char* s) {
 
 void generateHeader()
 {   
-    printf("ok2222\n\n");
-    file = fopen("output.j/n","w");
-    fprintf(file,".source %s","outfileName/n");
-	fprintf(file,".class public test\n.super java/lang/Object\n/n"); //code for defining class
-	fprintf(file,".method public <init>()V /n");
+    file = fopen("output.j","a+");
+    fprintf(file,".source %s","outfileName\n");
+	fprintf(file,".class public test\n.super java/lang/Object\n\n"); //code for defining class
+	
+    fprintf(file,".method public <init>()V /n");
 	fprintf(file,"aload_0 /n");
-	fprintf(file,"invokenonvirtual java/lang/Object/<init>()V/n");
-	fprintf(file,"return/n");
-	fprintf(file,".end method\n");
+	fprintf(file,"invokenonvirtual java/lang/Object/<init>()V\n");
+	fprintf(file,"return\n");
+	fprintf(file,".end method\n\n");
+
 	fprintf(file,".method public static main([Ljava/lang/String;)V/n");
-	fprintf(file,".limit locals 100\n.limit stack 100/n");
+	fprintf(file,".limit locals 100\n.limit stack 100\n");
 
 	// /* generate temporal vars for syso*/
 	// defineVar("1syso_int_var",INT);
@@ -2072,13 +2080,14 @@ void generateHeader()
 
 	// /*generate line*/
 	// writeCode(".line 1");
-    fclose(file);
+    // fclose(file);
 }
 
 void generateFooter()
 {
-	// writeCode("return");
-	// writeCode(".end method");
+    file = fopen("output.j","a+");
+	fprintf(file,"\nreturn\n");
+	fprintf(file,".end method\n");
 }
 
 //void writeCode(char * x)

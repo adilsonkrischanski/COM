@@ -20,6 +20,7 @@ char *fileName = "output.j";
 FILE *file;
 
 void generateHeader();
+void generateFooter();
 
 %}
 
@@ -60,16 +61,16 @@ void generateHeader();
 
 %%
 
-programa: PROGRAM_WORD IDENTIFIER SEMI_COLON corpo   {generateHeader();printf("Programa\n");}
+programa: PROGRAM_WORD IDENTIFIER SEMI_COLON corpo   {printf("Programa\n");}
         ;
 
 
 corpo: declaracoes comandoComposto       {printf("corpo\n");}
      ;
      
-comandoComposto: BEGIN_WORD   {printf("comando composto\n");}
+comandoComposto: BEGIN_WORD   {generateFooter();printf("comando composto\n");}
                  listaDeComandos
-                 END_WORD    
+                 END_WORD    {generateHeader();}
                ;
 
 declaracoes: declaracaoDeVariavel SEMI_COLON               {printf("declaracoes\n");}
@@ -218,17 +219,18 @@ void yyerror(const char* s) {
 
 void generateHeader()
 {   
-    printf("ok2222\n\n");
-    file = fopen("output.j/n","w");
-    fprintf(file,".source %s","outfileName/n");
-	fprintf(file,".class public test\n.super java/lang/Object\n/n"); //code for defining class
-	fprintf(file,".method public <init>()V /n");
+    file = fopen("output.j","a+");
+    fprintf(file,".source %s","outfileName\n");
+	fprintf(file,".class public test\n.super java/lang/Object\n\n"); //code for defining class
+	
+    fprintf(file,".method public <init>()V /n");
 	fprintf(file,"aload_0 /n");
-	fprintf(file,"invokenonvirtual java/lang/Object/<init>()V/n");
-	fprintf(file,"return/n");
-	fprintf(file,".end method\n");
+	fprintf(file,"invokenonvirtual java/lang/Object/<init>()V\n");
+	fprintf(file,"return\n");
+	fprintf(file,".end method\n\n");
+
 	fprintf(file,".method public static main([Ljava/lang/String;)V/n");
-	fprintf(file,".limit locals 100\n.limit stack 100/n");
+	fprintf(file,".limit locals 100\n.limit stack 100\n");
 
 	// /* generate temporal vars for syso*/
 	// defineVar("1syso_int_var",INT);
@@ -236,13 +238,14 @@ void generateHeader()
 
 	// /*generate line*/
 	// writeCode(".line 1");
-    fclose(file);
+    // fclose(file);
 }
 
 void generateFooter()
 {
-	// writeCode("return");
-	// writeCode(".end method");
+    file = fopen("output.j","a+");
+	fprintf(file,"\nreturn\n");
+	fprintf(file,".end method\n");
 }
 
 //void writeCode(char * x)

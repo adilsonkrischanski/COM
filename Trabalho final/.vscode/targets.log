@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul 25 11:22:26 2022
+# Make data base, printed on Tue Jul 26 09:46:47 2022
 
 # Variables
 
@@ -41,7 +41,7 @@ GDMSESSION = cinnamon
 # default
 MAKE_VERSION := 4.2.1
 # makefile
-CURDIR := /home/adilson/Udesc/COM/trabalho final
+CURDIR := /home/adilson/Udesc/COM/COM/Trabalho final
 # makefile
 SHELL = /bin/sh
 # environment
@@ -71,11 +71,11 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-441b8765-3bc1-4ba2-8e4f-d2112ed45974.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-91049f59-bcf1-4dff-9371-70b6a23b6c97.sock
 # environment
 LC_NAME = pt_BR.UTF-8
 # environment
-VSCODE_CWD = /home/adilson/Udesc/COM/trabalho final
+VSCODE_CWD = /home/adilson/Udesc/COM/COM/Trabalho final
 # environment
 XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session0
 # default
@@ -85,7 +85,9 @@ NO_PROXY = 127.0.0.1
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/adilson-Aspire-A315-56:@/tmp/.ICE-unix/1402,unix/adilson-Aspire-A315-56:/tmp/.ICE-unix/1402
+GJS_DEBUG_OUTPUT = stderr
+# environment
+SESSION_MANAGER = local/adilson-Aspire-A315-56:@/tmp/.ICE-unix/1690,unix/adilson-Aspire-A315-56:/tmp/.ICE-unix/1690
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -109,7 +111,7 @@ DISPLAY = :0
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-PWD = /home/adilson/Udesc/COM/trabalho final
+PWD = /home/adilson/Udesc/COM/COM/Trabalho final
 # environment
 QT_QPA_PLATFORMTHEME = qt5ct
 # default
@@ -117,7 +119,7 @@ QT_QPA_PLATFORMTHEME = qt5ct
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1476
+SSH_AGENT_PID = 1760
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = X-Cinnamon
 # environment
@@ -149,7 +151,7 @@ XDG_VTNR = 7
 # environment
 LC_TIME = en_US.UTF-8
 # environment
-PLATFORMIO_PATH = /home/adilson/.platformio/penv/bin:/home/adilson/.platformio/penv:/home/adilson/.platformio/python3/bin:/home/adilson/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PLATFORMIO_PATH = /home/adilson/.platformio/python3/bin:/home/adilson/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 COLORTERM = truecolor
 # default
@@ -199,10 +201,7 @@ GDK_BACKEND = x11
 # environment
 LC_PAPER = pt_BR.UTF-8
 # environment
- 
 CINNAMON_VERSION = 5.0.7
-# environment
-LC_IDENTIFICATION = pt_BR.UTF-8
 # environment
 QT_ACCESSIBILITY = 1
 # environment
@@ -222,11 +221,11 @@ LC_ALL = C
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/10758855_cd3d_4211_855c_65f9bf527c75
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/4d747b3d_0257_4a83_ac66_34fcbb21e9d3
 # automatic
 ^F = $(notdir $^)
 # environment
-GNOME_TERMINAL_SERVICE = :1.100
+GNOME_TERMINAL_SERVICE = :1.98
 # default
 SUFFIXES := 
 # environment
@@ -234,7 +233,7 @@ CHROME_DESKTOP = code-url-handler.desktop
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # environment
-GJS_DEBUG_OUTPUT = stderr
+LC_IDENTIFICATION = pt_BR.UTF-8
 # default
 .RECIPEPREFIX := 
 # environment
@@ -244,7 +243,7 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 5085
+VSCODE_PID = 9748
 # variable set hash-table stats:
 # Load=117/1024=11%, Rehash=0, Collisions=15/145=10%
 
@@ -254,9 +253,9 @@ VSCODE_PID = 5085
 
 # Directories
 
-# . (device 66309, inode 6316311): 11 files, no impossibilities.
+# . (device 66309, inode 6316311): 13 files, no impossibilities.
 
-# 11 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -287,6 +286,7 @@ all:
 # ^ := 
 # automatic
 # ? := 
+ 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=1/11=9%
 #  recipe to execute (from 'makefile', line 2):
@@ -371,12 +371,12 @@ exec: all
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 219 B / avg = 9 B
-# current buf: size = 8162 B / used = 219 B / count = 23 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 25 / storage = 240 B / avg = 9 B
+# current buf: size = 8162 B / used = 240 B / count = 25 / avg = 9 B
 
-# strcache performance: lookups = 42 / hit rate = 45%
+# strcache performance: lookups = 44 / hit rate = 43%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=1/42=2%
-# Finished Make data base on Mon Jul 25 11:22:26 2022
+# Load=25/8192=0%, Rehash=0, Collisions=1/44=2%
+# Finished Make data base on Tue Jul 26 09:46:47 2022
 
  

@@ -1,5 +1,14 @@
-.source outfileName.class public test
+
+.source outfileName
+.class public test
 .super java/lang/Object
-.method public <init>()Vaload_0invokenonvirtual java/lang/Object/<init>()Vreturn.end method
-.method public static main([Ljava/lang/String;)V.limit locals 100
+
+.method public <init>()V /naload_0 /ninvokenonvirtual java/lang/Object/<init>()V
+return
+.end method
+
+.method public static main([Ljava/lang/String;)V/n.limit locals 100
 .limit stack 100
+
+return
+.end method
