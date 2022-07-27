@@ -52,11 +52,8 @@ void printLine();
 %token <aopval> OPAD
 %token <aopval> OPMUL 
 %token <aopval> RELATIONAL 
-%token <aopval> BOOLEAN
-%token T_NEWLINE T_QUIT
 %token SEMI_COLON PONTO_PONTO VIRGULA DOIS_PONTOS
-%token ATRIBUICAO EQUALS
-%token RIGHT_BRACKET_CURLY LEFT_BRACKET_CURLY
+%token ATRIBUICAO
 %token RIGHT_BRACKET LEFT_BRACKET
 %token COLCHETES_FECHA COLCHETES_ABRE
 
@@ -82,27 +79,34 @@ comandoComposto: BEGIN_WORD   {generateFooter();printf("comando composto\n");}
                         }
                ;
 
-declaracoes: declaracaoDeVariavel SEMI_COLON               {printf("declaracoes\n");}
-           | declaracoes declaracaoDeVariavel SEMI_COLON   {printf("declaracoes\n");}
-           | vazio                                         {printf("declaracoes\n");}
+declaracoes: declaracoesaux declaracaoDeVariavel SEMI_COLON
+           | vazio               {printf("declaracoes\n");}
            ;
+
+declaracoesaux: declaracoes
+              ;
+
 //string str($2);
-declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipo   /*{
-    char str[] = $2;
+declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipoSimples  
+    ;
 
-    if($4 == T_INT){
-        defineVar(str,T_INT);
-    }else if ($4 == T_REAL){
-        defineVar(str,T_REAL);
-    }else if ($4 == T_BOOL){
-        defineVar(str,T_BOOL);
-    }
-}*/
+    // if($4 == T_INT){
+    //     defineVar("a",T_INT);
+    //     printf("intt");
+    // }else if ($4 == T_REAL){
+    //     defineVar(str,T_REAL);
+    //      printf("reall");
+    // }else if ($4 == T_BOOL){
+    //     defineVar("a",T_BOOL);
+    //      printf("Bool");
+    // }
 
-listaDeComandos: comando SEMI_COLON                        {printf("lista de comandos\n");}
-               | listaDeComandos comando SEMI_COLON        {printf("lista de comandos\n");}
-               | vazio                                     {printf("lista de comandos\n");}
+
+listaDeComandos: listaComandosaux comando SEMI_COLON
+               | vazio                       {printf("lista de comandos\n");}
                ;
+listaComandosaux: listaDeComandos
+                ;
 
 comando: atribuicao                                      {printf("comando\n");}
        | condicional                                     {printf("comando\n");}
@@ -149,11 +153,12 @@ fator: variavel                                     {printf("VARIAVEL \n");}
      | LEFT_BRACKET expressao RIGHT_BRACKET         {printf("VARIAVEL \n");}
      ;
 
-seletor:                                                               {printf("TIPO \n");}
-    | seletor  COLCHETES_ABRE expressao  COLCHETES_FECHA               {printf("TIPO \n");}
-    | COLCHETES_ABRE expressao  COLCHETES_FECHA                        {printf("TIPO \n");}
-    | vazio                                                            {printf("TIPO \n");}
-    ;
+seletor: seletoraux COLCHETES_ABRE expressao  COLCHETES_FECHA
+       | vazio               {printf("TIPO \n");}
+       ;
+
+seletoraux: seletor
+          ;
 
 termo: termo OPMUL fator {printf("TERMO\n");}
     | fator              {printf("TERMO - FATOR\n");}
@@ -169,7 +174,7 @@ tipo: tipoAgregado  {printf("TIPO \n");}
 tipoAgregado: ARRAY_WORD agregadoAux OF_WORD tipo  {printf("TIPO AGREGADO\n");}
     ;
 
-tipoSimples: T_INT //{$$ = $1;}
+tipoSimples: T_INT {printf("TIPO REAL\n");}
     | T_REAL       {printf("TIPO REAL\n");}
     | T_BOOL       {printf("TIPO BOOL\n");}
     ;

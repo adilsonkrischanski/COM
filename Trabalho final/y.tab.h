@@ -71,21 +71,15 @@ extern int yydebug;
     OPAD = 277,
     OPMUL = 278,
     RELATIONAL = 279,
-    BOOLEAN = 280,
-    T_NEWLINE = 281,
-    T_QUIT = 282,
-    SEMI_COLON = 283,
-    PONTO_PONTO = 284,
-    VIRGULA = 285,
-    DOIS_PONTOS = 286,
-    ATRIBUICAO = 287,
-    EQUALS = 288,
-    RIGHT_BRACKET_CURLY = 289,
-    LEFT_BRACKET_CURLY = 290,
-    RIGHT_BRACKET = 291,
-    LEFT_BRACKET = 292,
-    COLCHETES_FECHA = 293,
-    COLCHETES_ABRE = 294
+    SEMI_COLON = 280,
+    PONTO_PONTO = 281,
+    VIRGULA = 282,
+    DOIS_PONTOS = 283,
+    ATRIBUICAO = 284,
+    RIGHT_BRACKET = 285,
+    LEFT_BRACKET = 286,
+    COLCHETES_FECHA = 287,
+    COLCHETES_ABRE = 288
   };
 #endif
 /* Tokens.  */
@@ -111,21 +105,15 @@ extern int yydebug;
 #define OPAD 277
 #define OPMUL 278
 #define RELATIONAL 279
-#define BOOLEAN 280
-#define T_NEWLINE 281
-#define T_QUIT 282
-#define SEMI_COLON 283
-#define PONTO_PONTO 284
-#define VIRGULA 285
-#define DOIS_PONTOS 286
-#define ATRIBUICAO 287
-#define EQUALS 288
-#define RIGHT_BRACKET_CURLY 289
-#define LEFT_BRACKET_CURLY 290
-#define RIGHT_BRACKET 291
-#define LEFT_BRACKET 292
-#define COLCHETES_FECHA 293
-#define COLCHETES_ABRE 294
+#define SEMI_COLON 280
+#define PONTO_PONTO 281
+#define VIRGULA 282
+#define DOIS_PONTOS 283
+#define ATRIBUICAO 284
+#define RIGHT_BRACKET 285
+#define LEFT_BRACKET 286
+#define COLCHETES_FECHA 287
+#define COLCHETES_ABRE 288
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -140,7 +128,7 @@ union YYSTYPE
     char * aopval;
 
 
-#line 144 "y.tab.h"
+#line 132 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

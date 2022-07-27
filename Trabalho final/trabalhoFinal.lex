@@ -26,7 +26,6 @@ FLOAT "-"?{DIGITOS}.{DIGITOS}("E"{DIGITOS}+)?
 LETRA [a-zA-Z]
 ID {LETRA}({LETRA}|{DIGITO})*
 RELACIONAIS "="|"<>"|">"|">="|"<"|"<="
-BOOLEANOS "&&"|"||"
 OP_AD "+"|"-"|"or"
 OP_MUL "*"|"/"|"and"
 BINARIO "true"|"false"
@@ -56,21 +55,18 @@ BINARIO "true"|"false"
 {FLOAT}       {yylval.fval = atof(yytext);return FLOAT;}
 {ID}          {yylval.idval = strdup(yytext);return IDENTIFIER;}
 {RELACIONAIS} {yylval.aopval = strdup(yytext);return RELATIONAL;}
-{BOOLEANOS}   {yylval.aopval = strdup(yytext);return BOOLEAN;}
-{BINARIO}     {  if(!strcmp(yytext,"true")){ yylval.bval = 1;} else { yylval.bval = 0;}return BOOL;}
+{BINARIO}     {return BOOL;}
 
 
 ";"  { return SEMI_COLON;}
 ":=" {return ATRIBUICAO;}
 ".." {return PONTO_PONTO;}
-":" {return DOIS_PONTOS;}
+":"  {return DOIS_PONTOS;}
 ","  {return VIRGULA;}
 "["  {return COLCHETES_ABRE;}
 "]"  {return COLCHETES_FECHA;}
 "("  {return LEFT_BRACKET;}
 ")"  {return RIGHT_BRACKET;}
-"{"  {return LEFT_BRACKET_CURLY;}
-"}"  {return RIGHT_BRACKET_CURLY;}
 \n	 {++lineCounter;}
 
 [ \t]+      /* Lembre-se... espaços em branco não tem utilidade! */

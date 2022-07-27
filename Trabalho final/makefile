@@ -1,6 +1,6 @@
 all: 
 	flex trabalhoFinal.lex
-	bison -y -d trabalhoFinal.y
+	bison -g --report=states -y -d trabalhoFinal.y
 	gcc  lex.yy.c y.tab.c -o trabalhoFinal.out
 	rm output.j
 	./trabalhoFinal.out
