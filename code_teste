@@ -1,0 +1,13 @@
+program trabalhoFinal;
+    var ola, tudo, bom : integer;
+    begin
+        ola := 2 + 3 * 4;
+        if ola <> 25 then
+            ola := 25
+        else
+            ola := ola + 1
+        ;
+    end
+
+-----------------------------------------------------
+

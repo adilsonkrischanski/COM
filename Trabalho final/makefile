@@ -2,6 +2,8 @@ all:
 	flex trabalhoFinal.lex
 	bison -y -d trabalhoFinal.y
 	gcc  lex.yy.c y.tab.c -o trabalhoFinal.out
+	rm output.j
+	./trabalhoFinal.out
 
 exec: all
 	./trabalhoFinal.out
