@@ -1,0 +1,6 @@
+program trabalhoFinal;
+    var ola, tudo, bom : integer;
+    var nossa, que, legal: real;
+    begin
+        ola := 2;
+    end

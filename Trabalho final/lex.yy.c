@@ -914,7 +914,7 @@ YY_RULE_SETUP
 case 22:
 YY_RULE_SETUP
 #line 58 "trabalhoFinal.lex"
-{return BOOL;}
+{if(!strcmp(yytext,"true")){ yylval.bval = 1;} else { yylval.bval = 0;}return BOOL;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP

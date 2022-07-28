@@ -72,6 +72,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
+#include "header.h"
 
 
 #define GetCurrentDir getcwd
@@ -82,28 +84,20 @@ void yyerror(const char * s);
 extern int yylex();
 extern int yyparse();
 
+char *auxTermo;
 char outfileName[] = "input_code.txt";
 extern int lineCounter;
 
-typedef struct {
-		int num;
-        char *nome;
-        struct listIds *prox;
-} listIds;
-
 struct listIds *codeList = NULL;
+struct listIds *simbTab = NULL;
+int cont = 1, auxIds = 1, lines = 1, cont2 = 3, labels = 0;
+
 char *fileName = "output.j";
 FILE *file;
-int cont = 1, auxIds = 1;
-int lines = 1;
-
-void generateHeader();
-void generateFooter();
-void defineVar(char *lista_ids, int type);
-void printLine();
 
 
-#line 107 "y.tab.c"
+
+#line 101 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -221,7 +215,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 38 "trabalhoFinal.y"
+#line 32 "trabalhoFinal.y"
 
     int ival;
     float fval;
@@ -234,6 +228,7 @@ union YYSTYPE
         char *nome;
         struct listIds *prox;
     };
+    struct valorar *a;
 
     struct listIds *id;
     
@@ -246,7 +241,7 @@ union YYSTYPE
 	int sType;
 
 
-#line 250 "y.tab.c"
+#line 245 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -565,16 +560,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   77
+#define YYLAST   80
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  34
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  28
+#define YYNNTS  32
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  46
+#define YYNRULES  50
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  90
+#define YYNSTATES  94
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   288
@@ -624,11 +619,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    91,    91,    91,    96,    99,    99,   104,   105,   108,
-     112,   135,   136,   138,   141,   142,   143,   144,   145,   148,
-     170,   197,   200,   203,   204,   207,   210,   213,   214,   217,
-     218,   221,   222,   223,   226,   227,   228,   231,   232,   235,
-     238,   239,   252,   253,   254,   257,   262
+       0,    96,    96,    96,   101,   104,   104,   109,   110,   113,
+     117,   136,   137,   139,   142,   143,   144,   145,   146,   149,
+     164,   182,   193,   196,   197,   200,   203,   206,   207,   210,
+     211,   214,   221,   228,   238,   241,   244,   248,   259,   260,
+     263,   264,   267,   270,   288,   302,   315,   316,   317,   320,
+     325
 };
 #endif
 
@@ -648,8 +644,8 @@ static const char *const yytname[] =
   "declaracaoDeVariavel", "listaDeComandos", "listaComandosaux", "comando",
   "listaIds", "atribuicao", "condicional", "condicionalAUX",
   "comandoWhile", "comandoFor", "expressao", "expressaoSimples", "literal",
-  "fator", "seletor", "seletoraux", "termo", "tipoSimples", "variavel",
-  "vazio", YY_NULLPTR
+  "intlit", "floatlit", "boollit", "fator", "seletor", "seletoraux",
+  "termo", "opmul", "tipoSimples", "variavel", "vazio", YY_NULLPTR
 };
 #endif
 
@@ -665,12 +661,12 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-53)
+#define YYPACT_NINF (-58)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-40)
+#define YYTABLE_NINF (-43)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -679,15 +675,16 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -53,    12,    -1,   -53,    -2,    20,   -53,   -53,    21,    22,
-     -53,   -53,   -53,    27,    24,   -53,   -53,   -12,   -53,    32,
-       8,   -53,    35,    48,   -53,    23,    23,    26,   -53,   -53,
-      34,   -53,   -53,   -53,   -53,    33,   -53,   -53,   -53,   -53,
-     -53,   -53,   -53,   -53,    23,    54,   -11,   -53,   -53,    40,
-     -53,     6,    43,    36,    37,   -53,   -53,    23,    38,     8,
-      23,    23,    23,    23,    42,    23,   -53,   -53,    -3,    40,
-      49,   -53,    25,    23,    41,     8,   -53,   -53,     8,     9,
-     -53,    47,   -53,    23,   -53,   -16,    43,    44,   -53,     2
+     -58,    16,    10,   -58,     9,    26,   -58,   -58,    28,    37,
+     -58,   -58,   -58,    33,    30,   -58,   -58,    22,   -58,    42,
+       8,   -58,    36,    34,   -58,    13,    13,    -8,   -58,   -58,
+      35,   -58,   -58,   -58,   -58,    29,   -58,   -58,   -58,   -58,
+     -58,   -58,   -58,   -58,    13,    54,    -9,   -58,   -58,   -58,
+     -58,   -58,    41,   -58,    23,    44,    38,    39,   -58,   -58,
+      13,    43,     8,    13,    13,   -58,    13,    13,    49,    13,
+      41,   -58,    -1,    41,    45,   -58,    -5,    13,    46,     8,
+     -58,   -58,     8,    24,   -58,    50,   -58,    13,   -58,   -14,
+      44,    47,   -58,     2
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -695,31 +692,34 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       2,     0,     0,     1,     0,     0,    46,     3,     9,     0,
-       8,     5,     4,     0,     0,    46,    19,     0,     7,    13,
-       0,    12,     0,     0,     6,     0,     0,     0,    46,    16,
-       0,    14,    15,    18,    17,     0,    20,    42,    43,    44,
-      10,    31,    32,    33,     0,     0,    27,    35,    41,    30,
-      34,     0,     0,    45,     0,    38,    11,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    21,    36,     0,    29,
-      28,    40,     0,     0,     0,     0,    24,    22,     0,     0,
-      37,     0,    25,     0,    23,     0,     0,     0,    46,    13
+       2,     0,     0,     1,     0,     0,    50,     3,     9,     0,
+       8,     5,     4,     0,     0,    50,    19,     0,     7,    13,
+       0,    12,     0,     0,     6,     0,     0,     0,    50,    16,
+       0,    14,    15,    18,    17,     0,    20,    46,    47,    48,
+      10,    34,    35,    36,     0,     0,    27,    38,    31,    32,
+      33,    44,    30,    37,     0,     0,    49,     0,    41,    11,
+       0,     0,     0,     0,     0,    45,     0,     0,     0,     0,
+      21,    39,     0,    29,    28,    43,     0,     0,     0,     0,
+      24,    22,     0,     0,    40,     0,    25,     0,    23,     0,
+       0,     0,    50,    13
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -53,   -53,   -53,   -53,    57,   -53,   -53,   -53,   -53,   -13,
-     -53,   -52,   -53,   -51,   -53,   -53,   -53,   -53,   -40,   -23,
-     -53,    14,   -53,   -53,    17,   -53,   -20,    -4
+     -58,   -58,   -58,   -58,    58,   -58,   -58,   -58,   -58,   -23,
+     -58,   -57,   -58,   -54,   -58,   -58,   -58,   -58,   -41,   -24,
+     -58,   -58,   -58,   -58,    14,   -58,   -58,   -51,   -58,   -58,
+     -20,    -2
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
       -1,     1,     2,     7,    29,    15,     8,     9,    14,    19,
-      20,    30,    17,    31,    32,    77,    33,    34,    45,    46,
-      47,    48,    53,    54,    49,    40,    50,    21
+      20,    30,    17,    31,    32,    81,    33,    34,    45,    46,
+      47,    48,    49,    50,    51,    56,    57,    52,    66,    40,
+      53,    21
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -727,26 +727,28 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      35,    64,    10,    51,    58,    75,    60,    68,     4,    86,
-     -26,    60,     3,    61,    25,    22,    23,    66,    26,     5,
-      27,    11,    76,    81,    55,    74,    82,   -26,    60,    28,
-      63,    60,    35,    83,    11,    87,    78,    13,    70,    35,
-      72,    41,    42,    43,    28,     6,    24,    60,    16,    18,
-      79,    37,    38,    39,    44,    35,    36,    52,    35,    56,
-      85,    59,    57,    62,    28,    12,    35,    73,    67,   -39,
-      65,    60,    84,    80,    88,    89,    71,    69
+      35,    68,    54,    61,    10,    72,    82,    79,    63,    70,
+     -26,    90,    73,    63,    25,    64,     3,    63,    26,     4,
+      27,    11,    85,    55,    80,    86,    58,   -26,    78,    28,
+       5,    41,    42,    43,    28,    35,    91,    37,    38,    39,
+      74,    11,    35,    76,    44,    63,    63,    67,    87,    22,
+      23,     6,    13,    83,    16,    18,    24,    36,    60,    35,
+      59,    62,    35,    89,    65,    28,    12,    63,     0,    93,
+      35,   -42,    69,    71,    77,    88,     0,    92,    84,     0,
+      75
 };
 
 static const yytype_int8 yycheck[] =
 {
-      20,    52,     6,    26,    44,     8,    22,    59,     9,    25,
-       8,    22,     0,    24,     6,    27,    28,    57,    10,    21,
-      12,    13,    25,    75,    28,    65,    78,    25,    22,    21,
-      24,    22,    52,    24,    13,    86,    11,    15,    61,    59,
-      63,    18,    19,    20,    21,    25,    14,    22,    21,    25,
-      73,     3,     4,     5,    31,    75,    21,    31,    78,    25,
-      83,     7,    29,    23,    21,     8,    86,    25,    30,    33,
-      33,    22,    25,    32,    30,    88,    62,    60
+      20,    55,    26,    44,     6,    62,    11,     8,    22,    60,
+       8,    25,    63,    22,     6,    24,     0,    22,    10,     9,
+      12,    13,    79,    31,    25,    82,    28,    25,    69,    21,
+      21,    18,    19,    20,    21,    55,    90,     3,     4,     5,
+      64,    13,    62,    67,    31,    22,    22,    24,    24,    27,
+      28,    25,    15,    77,    21,    25,    14,    21,    29,    79,
+      25,     7,    82,    87,    23,    21,     8,    22,    -1,    92,
+      90,    33,    33,    30,    25,    25,    -1,    30,    32,    -1,
+      66
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -754,14 +756,15 @@ static const yytype_int8 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,    35,    36,     0,     9,    21,    25,    37,    40,    41,
-      61,    13,    38,    15,    42,    39,    21,    46,    25,    43,
-      44,    61,    27,    28,    14,     6,    10,    12,    21,    38,
-      45,    47,    48,    50,    51,    60,    21,     3,     4,     5,
-      59,    18,    19,    20,    31,    52,    53,    54,    55,    58,
-      60,    53,    31,    56,    57,    61,    25,    29,    52,     7,
-      22,    24,    23,    24,    47,    33,    52,    30,    45,    58,
-      53,    55,    53,    25,    52,     8,    25,    49,    11,    53,
-      32,    45,    45,    24,    25,    53,    25,    47,    30,    43
+      65,    13,    38,    15,    42,    39,    21,    46,    25,    43,
+      44,    65,    27,    28,    14,     6,    10,    12,    21,    38,
+      45,    47,    48,    50,    51,    64,    21,     3,     4,     5,
+      63,    18,    19,    20,    31,    52,    53,    54,    55,    56,
+      57,    58,    61,    64,    53,    31,    59,    60,    65,    25,
+      29,    52,     7,    22,    24,    23,    62,    24,    47,    33,
+      61,    30,    45,    61,    53,    58,    53,    25,    52,     8,
+      25,    49,    11,    53,    32,    45,    45,    24,    25,    53,
+      25,    47,    30,    43
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -770,8 +773,9 @@ static const yytype_int8 yyr1[] =
        0,    34,    36,    35,    37,    39,    38,    40,    40,    41,
       42,    43,    43,    44,    45,    45,    45,    45,    45,    46,
       46,    47,    48,    49,    49,    50,    51,    52,    52,    53,
-      53,    54,    54,    54,    55,    55,    55,    56,    56,    57,
-      58,    58,    59,    59,    59,    60,    61
+      53,    54,    54,    54,    55,    56,    57,    58,    58,    58,
+      59,    59,    60,    61,    61,    62,    63,    63,    63,    64,
+      65
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -780,8 +784,9 @@ static const yytype_int8 yyr2[] =
        0,     2,     0,     5,     2,     0,     4,     3,     1,     1,
        4,     3,     1,     1,     1,     1,     1,     1,     1,     1,
        3,     3,     5,     3,     1,     6,    11,     1,     3,     3,
-       1,     1,     1,     1,     1,     1,     3,     4,     1,     1,
-       3,     1,     1,     1,     1,     2,     0
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     3,
+       4,     1,     1,     3,     1,     1,     1,     1,     1,     2,
+       0
 };
 
 
@@ -1477,55 +1482,51 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 91 "trabalhoFinal.y"
+#line 96 "trabalhoFinal.y"
             {generateHeader();}
-#line 1483 "y.tab.c"
+#line 1488 "y.tab.c"
     break;
 
   case 3:
-#line 92 "trabalhoFinal.y"
+#line 97 "trabalhoFinal.y"
                                                    {printf("Programa\n");}
-#line 1489 "y.tab.c"
+#line 1494 "y.tab.c"
     break;
 
   case 4:
-#line 96 "trabalhoFinal.y"
+#line 101 "trabalhoFinal.y"
                                          {printf("corpo\n");}
-#line 1495 "y.tab.c"
+#line 1500 "y.tab.c"
     break;
 
   case 5:
-#line 99 "trabalhoFinal.y"
+#line 104 "trabalhoFinal.y"
                               {printf("comando composto\n");}
-#line 1501 "y.tab.c"
+#line 1506 "y.tab.c"
     break;
 
   case 6:
-#line 101 "trabalhoFinal.y"
+#line 106 "trabalhoFinal.y"
                              { generateFooter();}
-#line 1507 "y.tab.c"
+#line 1512 "y.tab.c"
     break;
 
   case 8:
-#line 105 "trabalhoFinal.y"
+#line 110 "trabalhoFinal.y"
                                  {printf("declaracoes\n");}
-#line 1513 "y.tab.c"
+#line 1518 "y.tab.c"
     break;
 
   case 10:
-#line 112 "trabalhoFinal.y"
-                                                                {printf("%i\n",(yyvsp[0].sType));  
-
+#line 117 "trabalhoFinal.y"
+                                                                { 
     struct listIds *l;
     l = (yyvsp[-2].id);
-    printf("Aqui: %s\n", l->nome);
     codeList = NULL;
     while(l != NULL){
         if((yyvsp[0].sType) == T_INT){
-            printf("Alou\n");
             defineVar(l->nome,T_INT);
         }else if ((yyvsp[0].sType) == T_REAL){
-            printf("Alou2\n");
             defineVar(l->nome,T_REAL);
         }else if ((yyvsp[0].sType) == T_BOOL){
             defineVar(l->nome,T_BOOL);
@@ -1534,248 +1535,320 @@ yyreduce:
     }
 
 }
-#line 1538 "y.tab.c"
+#line 1539 "y.tab.c"
     break;
 
   case 12:
-#line 136 "trabalhoFinal.y"
+#line 137 "trabalhoFinal.y"
                                              {printf("lista de comandos\n");}
-#line 1544 "y.tab.c"
+#line 1545 "y.tab.c"
     break;
 
   case 14:
-#line 141 "trabalhoFinal.y"
+#line 142 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1550 "y.tab.c"
+#line 1551 "y.tab.c"
     break;
 
   case 15:
-#line 142 "trabalhoFinal.y"
+#line 143 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1556 "y.tab.c"
+#line 1557 "y.tab.c"
     break;
 
   case 16:
-#line 143 "trabalhoFinal.y"
+#line 144 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1562 "y.tab.c"
+#line 1563 "y.tab.c"
     break;
 
   case 17:
-#line 144 "trabalhoFinal.y"
+#line 145 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1568 "y.tab.c"
+#line 1569 "y.tab.c"
     break;
 
   case 18:
-#line 145 "trabalhoFinal.y"
+#line 146 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1574 "y.tab.c"
+#line 1575 "y.tab.c"
     break;
 
   case 19:
-#line 148 "trabalhoFinal.y"
+#line 149 "trabalhoFinal.y"
                                                          {
-            if(auxIds == 1){
-                printf("Alou3\n");
-                struct listIds *p;
+                struct listIds *p, *a;
                 p = (malloc(sizeof(struct listIds)));
+                a = (malloc(sizeof(struct listIds)));
                 p->num = auxIds -1;
                 p->nome = (yyvsp[0].idval);
                 p->prox = codeList;
+                a->num = cont2;
+                cont2++;
+                a->nome = p->nome;
+                a->prox = simbTab;
+                simbTab = a;
                 codeList = p;
                 auxIds++;
-            }else{
-                printf("Alou4\n");
-                struct listIds *p;
-                p = (malloc(sizeof(struct listIds)));
-                p->num = auxIds -1;
-                p->nome = (yyvsp[0].idval);
-                p->prox = codeList;
-                codeList = p;
-                auxIds++;
-            }
-        printf("lista ids\n");
     }
-#line 1601 "y.tab.c"
+#line 1595 "y.tab.c"
     break;
 
   case 20:
-#line 170 "trabalhoFinal.y"
+#line 164 "trabalhoFinal.y"
                                                          {
-            if(auxIds == 1){
-
-            struct listIds *p;
-            p = (malloc(sizeof(struct listIds)));
-            p->num = auxIds -1;
-            p->nome = (yyvsp[0].idval);
-            p->prox = codeList;
-            codeList = p;
-            auxIds = 1;
-            (yyval.id) = codeList;
-        }else{
-
-            struct listIds *p;
-            p = (malloc(sizeof(struct listIds)));
-            p->num = auxIds -1;
-            p->nome = (yyvsp[0].idval);
-            p->prox = codeList;
-            codeList = p;
-            auxIds = 1;
-            (yyval.id) = codeList;
-        }
-
-            printf("lista ids\n");
+            struct listIds *p,*a;
+                p = (malloc(sizeof(struct listIds)));
+                a = (malloc(sizeof(struct listIds)));
+                p->num = auxIds -1;
+                p->nome = (yyvsp[0].idval);
+                p->prox = codeList;
+                codeList = p;
+                a->num = cont2;
+                cont2++;
+                a->nome = p->nome;
+                a->prox = simbTab;
+                simbTab = a;
+                auxIds = 1;
+                (yyval.id) = codeList;
     }
-#line 1631 "y.tab.c"
+#line 1616 "y.tab.c"
     break;
 
   case 21:
-#line 197 "trabalhoFinal.y"
-                                                         {printf("atribuicao\n");}
-#line 1637 "y.tab.c"
+#line 182 "trabalhoFinal.y"
+                                                     {
+    int a = findVar((yyvsp[-2].idval));
+    if(a != -1){
+        fprintf(file, "L_%i:\n", labels);
+        fprintf(file, (yyvsp[0].aopval));
+        fprintf(file, "istore %i\n", a);
+        labels++;
+    }
+    printf("atribuicao\n");}
+#line 1630 "y.tab.c"
     break;
 
   case 22:
-#line 200 "trabalhoFinal.y"
+#line 193 "trabalhoFinal.y"
                                                                 {printf("condicional\n");}
-#line 1643 "y.tab.c"
+#line 1636 "y.tab.c"
     break;
 
   case 23:
-#line 203 "trabalhoFinal.y"
+#line 196 "trabalhoFinal.y"
                                                                               {printf("condicionalAUX\n");}
-#line 1649 "y.tab.c"
+#line 1642 "y.tab.c"
     break;
 
   case 24:
-#line 204 "trabalhoFinal.y"
+#line 197 "trabalhoFinal.y"
                                                                   {printf("condicionalAUX\n");}
-#line 1655 "y.tab.c"
+#line 1648 "y.tab.c"
     break;
 
   case 25:
-#line 207 "trabalhoFinal.y"
+#line 200 "trabalhoFinal.y"
                                                                                             {printf("comando While\n");}
-#line 1661 "y.tab.c"
+#line 1654 "y.tab.c"
     break;
 
   case 26:
-#line 210 "trabalhoFinal.y"
+#line 203 "trabalhoFinal.y"
                                                                                                                                                              {printf("comando For\n");}
-#line 1667 "y.tab.c"
+#line 1660 "y.tab.c"
     break;
 
   case 27:
-#line 213 "trabalhoFinal.y"
+#line 206 "trabalhoFinal.y"
                                                          {printf("expressao\n");}
-#line 1673 "y.tab.c"
+#line 1666 "y.tab.c"
     break;
 
   case 28:
-#line 214 "trabalhoFinal.y"
+#line 207 "trabalhoFinal.y"
                                                          {printf("expressao\n");}
-#line 1679 "y.tab.c"
+#line 1672 "y.tab.c"
     break;
 
   case 29:
-#line 217 "trabalhoFinal.y"
+#line 210 "trabalhoFinal.y"
                                                     {printf("EXP SIMPLES \n");}
-#line 1685 "y.tab.c"
+#line 1678 "y.tab.c"
     break;
 
   case 30:
-#line 218 "trabalhoFinal.y"
+#line 211 "trabalhoFinal.y"
                                                     {printf("EXP SIMPLES \n");}
-#line 1691 "y.tab.c"
+#line 1684 "y.tab.c"
     break;
 
   case 31:
-#line 221 "trabalhoFinal.y"
-                                                   {printf("literal \n");}
-#line 1697 "y.tab.c"
+#line 214 "trabalhoFinal.y"
+                                                      {printf("Atribuido1\n");
+        struct valorar *p;
+        p=malloc(sizeof(struct valorar));
+        p->valor = (yyvsp[0].ival);
+        p->tipo = strdup("INT");
+        (yyval.a) = p;
+        }
+#line 1696 "y.tab.c"
     break;
 
   case 32:
-#line 222 "trabalhoFinal.y"
-                                                   {printf("literal \n");}
-#line 1703 "y.tab.c"
+#line 221 "trabalhoFinal.y"
+                                                      {printf("Atribuido2\n");
+        struct valorar *p;
+        p=malloc(sizeof(struct valorar));
+        p->valor = (yyvsp[0].fval);
+        p->tipo = strdup("FLOAT");
+        (yyval.a) = p;
+       }
+#line 1708 "y.tab.c"
     break;
 
   case 33:
-#line 223 "trabalhoFinal.y"
-                                                   {printf("literal \n");}
-#line 1709 "y.tab.c"
+#line 228 "trabalhoFinal.y"
+                                                      {printf("Atribuido3\n");
+        struct valorar *p;
+        p=malloc(sizeof(struct valorar));
+        p->valor = (yyvsp[0].bval);
+        p->tipo = strdup("BOOL");
+        (yyval.a) = p;
+       }
+#line 1720 "y.tab.c"
     break;
 
   case 34:
-#line 226 "trabalhoFinal.y"
-                                                    {printf("VARIAVEL \n");}
-#line 1715 "y.tab.c"
+#line 238 "trabalhoFinal.y"
+            {(yyval.ival) = (yyvsp[0].ival);}
+#line 1726 "y.tab.c"
     break;
 
   case 35:
-#line 227 "trabalhoFinal.y"
-                                                    {printf("VARIAVEL \n");}
-#line 1721 "y.tab.c"
+#line 241 "trabalhoFinal.y"
+                {(yyval.fval) = (yyvsp[0].fval);}
+#line 1732 "y.tab.c"
     break;
 
   case 36:
-#line 228 "trabalhoFinal.y"
-                                                    {printf("VARIAVEL \n");}
-#line 1727 "y.tab.c"
+#line 244 "trabalhoFinal.y"
+              {(yyval.bval) = (yyvsp[0].bval);}
+#line 1738 "y.tab.c"
+    break;
+
+  case 37:
+#line 248 "trabalhoFinal.y"
+                                                   {printf("VARIAVEL \n");
+        int a = findVar((yyvsp[0].idval));
+        //printf("okk\n");
+        if(a != -1){
+            struct valorar *p;
+            p=malloc(sizeof(struct valorar));
+            p->valor = (float)a;
+            p->tipo = strdup((yyvsp[0].idval));
+            (yyval.a) = p;
+        }
+    }
+#line 1754 "y.tab.c"
     break;
 
   case 38:
-#line 232 "trabalhoFinal.y"
-                             {printf("TIPO \n");}
-#line 1733 "y.tab.c"
+#line 259 "trabalhoFinal.y"
+                                                    {printf("VARIAVEL \n");printf("okk\n");(yyval.a) = (yyvsp[0].a);}
+#line 1760 "y.tab.c"
     break;
 
-  case 40:
-#line 238 "trabalhoFinal.y"
-                         {printf("TERMO\n");}
-#line 1739 "y.tab.c"
+  case 39:
+#line 260 "trabalhoFinal.y"
+                                                    {printf("VARIAVEL \n");}
+#line 1766 "y.tab.c"
     break;
 
   case 41:
-#line 239 "trabalhoFinal.y"
-                         {printf("TERMO - FATOR\n");}
-#line 1745 "y.tab.c"
-    break;
-
-  case 42:
-#line 252 "trabalhoFinal.y"
-                   {(yyval.sType)=T_INT;printf("TIPO REAL\n");}
-#line 1751 "y.tab.c"
+#line 264 "trabalhoFinal.y"
+                             {printf("TIPO \n");}
+#line 1772 "y.tab.c"
     break;
 
   case 43:
-#line 253 "trabalhoFinal.y"
-                   {(yyval.sType)=T_REAL;printf("TIPO REAL\n");}
-#line 1757 "y.tab.c"
+#line 270 "trabalhoFinal.y"
+                         {printf("TERMO\n");
+        if(strcmp((yyvsp[0].a)->tipo, "INT")==0){
+            auxTermo = strcat(auxTermo, toString(1, (yyvsp[0].a)->valor));
+        }else if(strcmp((yyvsp[0].a)->tipo, "FLOAT")==0){
+            auxTermo = strcat(auxTermo, toString(2, (yyvsp[0].a)->valor));
+        }else if(strcmp((yyvsp[0].a)->tipo, "BOOL")==0){
+            auxTermo = strcat(auxTermo, toString(1, (yyvsp[0].a)->valor));
+        }else{
+            auxTermo = strcat(auxTermo, toString(3, (yyvsp[0].a)->valor));
+        }
+        if(strcmp((yyvsp[-1].aopval), "*")){
+            auxTermo = strcat(auxTermo, "imul\n");
+            (yyval.aopval) = auxTermo;
+        }else if(strcmp((yyvsp[-1].aopval), "/")){
+            auxTermo = strcat(auxTermo, "imul\n");
+            (yyval.aopval) = auxTermo;
+        }
+    }
+#line 1795 "y.tab.c"
     break;
 
   case 44:
-#line 254 "trabalhoFinal.y"
-                   {(yyval.sType)=T_BOOL;printf("TIPO BOOL\n");}
-#line 1763 "y.tab.c"
+#line 288 "trabalhoFinal.y"
+                         {printf("TERMO - FATOR\n");
+        printf((yyvsp[0].a)->tipo);
+        if(strcmp((yyvsp[0].a)->tipo, "INT")==0){
+            auxTermo = strdup(toString(1, (yyvsp[0].a)->valor));
+        }else if(strcmp((yyvsp[0].a)->tipo, "FLOAT")==0){
+            auxTermo = strdup(toString(2, (yyvsp[0].a)->valor));
+        }else if(strcmp((yyvsp[0].a)->tipo, "BOOL")==0){
+            auxTermo = strdup(toString(1, (yyvsp[0].a)->valor));
+        }else{
+            auxTermo = strdup(toString(3, (yyvsp[0].a)->valor));
+        }
+}
+#line 1812 "y.tab.c"
     break;
 
   case 45:
-#line 257 "trabalhoFinal.y"
-                             {printf("Variavel\n");}
-#line 1769 "y.tab.c"
+#line 302 "trabalhoFinal.y"
+               {(yyval.aopval) = (yyvsp[0].aopval);}
+#line 1818 "y.tab.c"
     break;
 
   case 46:
-#line 262 "trabalhoFinal.y"
+#line 315 "trabalhoFinal.y"
+                   {(yyval.sType)=T_INT;printf("TIPO INT\n");}
+#line 1824 "y.tab.c"
+    break;
+
+  case 47:
+#line 316 "trabalhoFinal.y"
+                   {(yyval.sType)=T_REAL;printf("TIPO REAL\n");}
+#line 1830 "y.tab.c"
+    break;
+
+  case 48:
+#line 317 "trabalhoFinal.y"
+                   {(yyval.sType)=T_BOOL;printf("TIPO BOOL\n");}
+#line 1836 "y.tab.c"
+    break;
+
+  case 49:
+#line 320 "trabalhoFinal.y"
+                             {printf("Variavel\n");(yyval.idval) = (yyvsp[-1].idval);}
+#line 1842 "y.tab.c"
+    break;
+
+  case 50:
+#line 325 "trabalhoFinal.y"
        {printf("Vazio\n");}
-#line 1775 "y.tab.c"
+#line 1848 "y.tab.c"
     break;
 
 
-#line 1779 "y.tab.c"
+#line 1852 "y.tab.c"
 
       default: break;
     }
@@ -2007,7 +2080,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 266 "trabalhoFinal.y"
+#line 329 "trabalhoFinal.y"
 
 
 
@@ -2018,13 +2091,7 @@ int main(int argv, char * argc[]) {
 	if(argv == 1) 
 	{
 		myfile = fopen("input_code.txt", "r");
-		//outfileName = "input_code.txt";
 	}
-	// else 
-	// {
-	// 	myfile = fopen(argc[1], "r");
-	// 	outfileName = string(argc[1]);
-	// }
 	if (!myfile) {
 		printf("I can't open input code file!\n");
 		char cCurrentPath[200];
@@ -2049,11 +2116,10 @@ void yyerror(const char* s) {
 
 void generateHeader()
 {   
-    // file = fopen("output.j","w+");
     fprintf(file,".source %s\n",outfileName);
 	fprintf(file,".class public test\n.super java/lang/Object\n\n"); //code for defining class
 	
-    fprintf(file,".method public <init>()V /n");
+    fprintf(file,".method public <init>()V \n");
 	fprintf(file,"aload_0\n");
 	fprintf(file,"invokenonvirtual java/lang/Object/<init>()V\n");
 	fprintf(file,"return\n");
@@ -2066,42 +2132,70 @@ void generateHeader()
 	defineVar("1syso_int_var",T_INT);
 	defineVar("1syso_float_var",T_REAL);
     printLine();
-
-	// /*generate line*/
-	// fprintf(file, ".line 1");
-    // fclose(file);
 }
 
 void generateFooter()
 {
-    // file = fopen("output.j","w+");
 	fprintf(file,"\nreturn\n");
 	fprintf(file,".end method\n");
 }
-
-//void writeCode(char * x)
-//{
-//	codeList.push_back(x);
-//}
  
 void defineVar(char *id, int type){
-    // file = fopen("output.j","w+");
-
     if(type == T_INT){
-        printf("%s\n", id);
         fprintf(file, "iconst_0\nistore %i\n", cont);
     }else if(type == T_BOOL){
-        printf("%s\n", id);
         fprintf(file, "iconst_0\nistore %i\n", cont);
     }else if(type == T_REAL){
-        printf("%s\n", id);
         fprintf(file, "fconst_0\nfstore %i\n", cont);
     }
     cont++;
 }
 
 void printLine(){
-    // file = fopen("output.j","w+");
     fprintf(file, ".line %i\n", lines);
     lines++;
+}
+
+void printSimb(){
+    struct listIds *p;
+    p = simbTab;
+    while(p != NULL){
+        printf("%i- %s\n",p->num, p->nome);
+        p=p->prox;
+    }
+}
+
+int findVar(char *nome){
+    struct listIds *p;
+    p = simbTab;
+    while(p!=NULL){
+        printf("%s\n", p->nome);
+        if(strcmp(p->nome, nome)==0){
+            return p->num;
+        }
+        p = p->prox;
+    }
+    return -1;
+}
+
+void printnoj(int var){
+    fprintf(file, "istore %i\n", var);
+    fprintf(file, "getstatic      java/lang/System/out Ljava/io/PrintStream;");
+    fprintf(file, "iload %i", var);
+    fprintf(file, "invokevirtual java/io/PrintStream/println(I)V");
+
+}
+
+char * toString(int i, float v){
+    char *a;
+    if(i == 1){
+        sprintf(a, "%.0f", v);
+        return strcat("ldc \n",a);
+    }else if(i == 2){
+        sprintf(a, "%f", v);
+        return strcat("ldc \n",a);
+    }else{
+        sprintf(a, "%.0f", v);
+        return strcat("ldc \n",a);
+    }
 }

@@ -55,7 +55,7 @@ BINARIO "true"|"false"
 {FLOAT}       {yylval.fval = atof(yytext);return FLOAT;}
 {ID}          {yylval.idval = strdup(yytext);return IDENTIFIER;}
 {RELACIONAIS} {yylval.aopval = strdup(yytext);return RELATIONAL;}
-{BINARIO}     {return BOOL;}
+{BINARIO}     {if(!strcmp(yytext,"true")){ yylval.bval = 1;} else { yylval.bval = 0;}return BOOL;}
 
 
 ";"  { return SEMI_COLON;}

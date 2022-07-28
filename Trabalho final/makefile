@@ -15,8 +15,8 @@ java:
 error: 
 	bison --verbose syntax.y
 
-custom_run: all
-	./trabalhoFinal.out tests/test6
+custom_run:
+	./trabalhoFinal.out
 	java -jar ./jasmin-1.1/jasmin.jar output.j
 	java test
 
