@@ -119,7 +119,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 30 "trabalhoFinal.y"
+#line 38 "trabalhoFinal.y"
 
     int ival;
     float fval;
@@ -127,8 +127,24 @@ union YYSTYPE
     char * idval;
     char * aopval;
 
+    struct listIds{
+		int num;
+        char *nome;
+        struct listIds *prox;
+    };
 
-#line 132 "y.tab.h"
+    struct listIds *id;
+    
+	struct {
+		int **trueList, **falseList;
+	} bexpr_type;
+	struct {
+		int **nextList;
+	} stmt_type;
+	int sType;
+
+
+#line 148 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

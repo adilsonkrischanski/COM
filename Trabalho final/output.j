@@ -1,4 +1,4 @@
-.source outfileName
+.source input_code.txt
 .class public test
 .super java/lang/Object
 
@@ -10,11 +10,13 @@ return
 .method public static main([Ljava/lang/String;)V
 .limit locals 100
 .limit stack 100
-fconst_0
-fstore 2
 iconst_0
 istore 1
+fconst_0
+fstore 2
 .line 1
+iconst_0
+istore 3
 
 return
 .end method

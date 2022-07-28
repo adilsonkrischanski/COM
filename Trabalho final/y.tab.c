@@ -73,6 +73,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+
 #define GetCurrentDir getcwd
 
 extern  FILE *yyin;
@@ -84,10 +85,17 @@ extern int yyparse();
 char outfileName[] = "input_code.txt";
 extern int lineCounter;
 
-char **codeList;
+typedef struct {
+		int num;
+        char *nome;
+        struct listIds *prox;
+} listIds;
+
+struct listIds *codeList = NULL;
 char *fileName = "output.j";
 FILE *file;
-int cont = 1;
+int cont = 1, auxIds = 1;
+int lines = 1;
 
 void generateHeader();
 void generateFooter();
@@ -95,7 +103,7 @@ void defineVar(char *lista_ids, int type);
 void printLine();
 
 
-#line 99 "y.tab.c"
+#line 107 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -213,7 +221,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 30 "trabalhoFinal.y"
+#line 38 "trabalhoFinal.y"
 
     int ival;
     float fval;
@@ -221,8 +229,24 @@ union YYSTYPE
     char * idval;
     char * aopval;
 
+    struct listIds{
+		int num;
+        char *nome;
+        struct listIds *prox;
+    };
 
-#line 226 "y.tab.c"
+    struct listIds *id;
+    
+	struct {
+		int **trueList, **falseList;
+	} bexpr_type;
+	struct {
+		int **nextList;
+	} stmt_type;
+	int sType;
+
+
+#line 250 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -539,18 +563,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  4
+#define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   76
+#define YYLAST   77
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  34
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  27
+#define YYNNTS  28
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  45
+#define YYNRULES  46
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  88
+#define YYNSTATES  90
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   288
@@ -600,11 +624,11 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    64,    64,    68,    71,    71,    82,    83,    86,    90,
-     105,   106,   108,   111,   112,   113,   114,   115,   118,   119,
-     122,   125,   128,   129,   132,   135,   138,   139,   142,   143,
-     146,   147,   148,   151,   152,   153,   156,   157,   160,   163,
-     164,   177,   178,   179,   182,   187
+       0,    91,    91,    91,    96,    99,    99,   104,   105,   108,
+     112,   132,   133,   135,   138,   139,   140,   141,   142,   145,
+     167,   189,   192,   195,   196,   199,   202,   205,   206,   209,
+     210,   213,   214,   215,   218,   219,   220,   223,   224,   227,
+     230,   231,   244,   245,   246,   249,   254
 };
 #endif
 
@@ -619,12 +643,13 @@ static const char *const yytname[] =
   "OF_WORD", "INT", "FLOAT", "BOOL", "IDENTIFIER", "OPAD", "OPMUL",
   "RELATIONAL", "SEMI_COLON", "PONTO_PONTO", "VIRGULA", "DOIS_PONTOS",
   "ATRIBUICAO", "RIGHT_BRACKET", "LEFT_BRACKET", "COLCHETES_FECHA",
-  "COLCHETES_ABRE", "$accept", "programa", "corpo", "comandoComposto",
-  "$@1", "declaracoes", "declaracoesaux", "declaracaoDeVariavel",
-  "listaDeComandos", "listaComandosaux", "comando", "listaIds",
-  "atribuicao", "condicional", "condicionalAUX", "comandoWhile",
-  "comandoFor", "expressao", "expressaoSimples", "literal", "fator",
-  "seletor", "seletoraux", "termo", "tipoSimples", "variavel", "vazio", YY_NULLPTR
+  "COLCHETES_ABRE", "$accept", "programa", "$@1", "corpo",
+  "comandoComposto", "$@2", "declaracoes", "declaracoesaux",
+  "declaracaoDeVariavel", "listaDeComandos", "listaComandosaux", "comando",
+  "listaIds", "atribuicao", "condicional", "condicionalAUX",
+  "comandoWhile", "comandoFor", "expressao", "expressaoSimples", "literal",
+  "fator", "seletor", "seletoraux", "termo", "tipoSimples", "variavel",
+  "vazio", YY_NULLPTR
 };
 #endif
 
@@ -640,12 +665,12 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-54)
+#define YYPACT_NINF (-53)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-39)
+#define YYTABLE_NINF (-40)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -654,15 +679,15 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       5,    -1,    33,    22,   -54,   -54,   -54,    24,    34,   -54,
-     -54,   -54,    27,    26,   -54,   -54,    18,   -54,    38,     6,
-     -54,    32,    39,   -54,    10,    10,    23,   -54,   -54,    31,
-     -54,   -54,   -54,   -54,    28,   -54,   -54,   -54,   -54,   -54,
-     -54,   -54,   -54,    10,    52,   -16,   -54,   -54,    41,   -54,
-      -9,    40,    29,    35,   -54,   -54,    10,    36,     6,    10,
-      10,    10,    10,    42,    10,   -54,   -54,    61,    41,    48,
-     -54,     0,    10,    43,     6,   -54,   -54,     6,    12,   -54,
-     -54,   -54,    10,   -15,    40,    44,   -54,     1
+     -53,    12,    -1,   -53,    -2,    20,   -53,   -53,    21,    22,
+     -53,   -53,   -53,    27,    24,   -53,   -53,   -12,   -53,    32,
+       8,   -53,    35,    48,   -53,    23,    23,    26,   -53,   -53,
+      34,   -53,   -53,   -53,   -53,    33,   -53,   -53,   -53,   -53,
+     -53,   -53,   -53,   -53,    23,    54,   -11,   -53,   -53,    40,
+     -53,     6,    43,    36,    37,   -53,   -53,    23,    38,     8,
+      23,    23,    23,    23,    42,    23,   -53,   -53,    -3,    40,
+      49,   -53,    25,    23,    41,     8,   -53,   -53,     8,     9,
+     -53,    47,   -53,    23,   -53,   -16,    43,    44,   -53,     2
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -670,31 +695,31 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     1,    45,     2,     8,     0,     7,
-       4,     3,     0,     0,    45,    18,     0,     6,    12,     0,
-      11,     0,     0,     5,     0,     0,     0,    45,    15,     0,
-      13,    14,    17,    16,     0,    19,    41,    42,    43,     9,
-      30,    31,    32,     0,     0,    26,    34,    40,    29,    33,
-       0,     0,    44,     0,    37,    10,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    20,    35,    45,    28,    27,
-      39,     0,     0,     0,     0,    21,    23,     0,     0,    36,
-      22,    24,     0,     0,     0,     0,    45,    12
+       2,     0,     0,     1,     0,     0,    46,     3,     9,     0,
+       8,     5,     4,     0,     0,    46,    19,     0,     7,    13,
+       0,    12,     0,     0,     6,     0,     0,     0,    46,    16,
+       0,    14,    15,    18,    17,     0,    20,    42,    43,    44,
+      10,    31,    32,    33,     0,     0,    27,    35,    41,    30,
+      34,     0,     0,    45,     0,    38,    11,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    21,    36,     0,    29,
+      28,    40,     0,     0,     0,     0,    24,    22,     0,     0,
+      37,     0,    25,     0,    23,     0,     0,     0,    46,    13
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -54,   -54,   -54,    64,   -54,   -54,   -54,   -54,   -14,   -54,
-     -53,   -54,   -49,   -54,   -54,   -54,   -54,   -39,   -22,   -54,
-      15,   -54,   -54,    14,   -54,   -19,    -4
+     -53,   -53,   -53,   -53,    57,   -53,   -53,   -53,   -53,   -13,
+     -53,   -52,   -53,   -51,   -53,   -53,   -53,   -53,   -40,   -23,
+     -53,    14,   -53,   -53,    17,   -53,   -20,    -4
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     6,    28,    14,     7,     8,    13,    18,    19,
-      29,    16,    30,    31,    75,    32,    33,    44,    45,    46,
-      47,    52,    53,    48,    39,    49,    20
+      -1,     1,     2,     7,    29,    15,     8,     9,    14,    19,
+      20,    30,    17,    31,    32,    77,    33,    34,    45,    46,
+      47,    48,    53,    54,    49,    40,    50,    21
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -702,61 +727,61 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      34,     9,    63,    50,    57,    67,    59,    59,    60,   -25,
-      84,    77,    24,    59,     1,    62,    25,    65,    26,    10,
-       3,    80,    59,    54,    81,    73,   -25,    27,    40,    41,
-      42,    27,    34,     4,    59,    85,    82,    10,    69,    34,
-      71,    43,    36,    37,    38,    21,    22,     5,    15,    12,
-      78,    17,    23,    35,    51,    34,    55,    56,    34,    58,
-      83,    27,   -38,    76,    61,    34,    66,    72,    64,    74,
-      59,    11,    87,    68,    86,    79,    70
+      35,    64,    10,    51,    58,    75,    60,    68,     4,    86,
+     -26,    60,     3,    61,    25,    22,    23,    66,    26,     5,
+      27,    11,    76,    81,    55,    74,    82,   -26,    60,    28,
+      63,    60,    35,    83,    11,    87,    78,    13,    70,    35,
+      72,    41,    42,    43,    28,     6,    24,    60,    16,    18,
+      79,    37,    38,    39,    44,    35,    36,    52,    35,    56,
+      85,    59,    57,    62,    28,    12,    35,    73,    67,   -39,
+      65,    60,    84,    80,    88,    89,    71,    69
 };
 
 static const yytype_int8 yycheck[] =
 {
-      19,     5,    51,    25,    43,    58,    22,    22,    24,     8,
-      25,    11,     6,    22,     9,    24,    10,    56,    12,    13,
-      21,    74,    22,    27,    77,    64,    25,    21,    18,    19,
-      20,    21,    51,     0,    22,    84,    24,    13,    60,    58,
-      62,    31,     3,     4,     5,    27,    28,    25,    21,    15,
-      72,    25,    14,    21,    31,    74,    25,    29,    77,     7,
-      82,    21,    33,    67,    23,    84,    30,    25,    33,     8,
-      22,     7,    86,    59,    30,    32,    61
+      20,    52,     6,    26,    44,     8,    22,    59,     9,    25,
+       8,    22,     0,    24,     6,    27,    28,    57,    10,    21,
+      12,    13,    25,    75,    28,    65,    78,    25,    22,    21,
+      24,    22,    52,    24,    13,    86,    11,    15,    61,    59,
+      63,    18,    19,    20,    21,    25,    14,    22,    21,    25,
+      73,     3,     4,     5,    31,    75,    21,    31,    78,    25,
+      83,     7,    29,    23,    21,     8,    86,    25,    30,    33,
+      33,    22,    25,    32,    30,    88,    62,    60
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     9,    35,    21,     0,    25,    36,    39,    40,    60,
-      13,    37,    15,    41,    38,    21,    45,    25,    42,    43,
-      60,    27,    28,    14,     6,    10,    12,    21,    37,    44,
-      46,    47,    49,    50,    59,    21,     3,     4,     5,    58,
-      18,    19,    20,    31,    51,    52,    53,    54,    57,    59,
-      52,    31,    55,    56,    60,    25,    29,    51,     7,    22,
-      24,    23,    24,    46,    33,    51,    30,    44,    57,    52,
-      54,    52,    25,    51,     8,    48,    60,    11,    52,    32,
-      44,    44,    24,    52,    25,    46,    30,    42
+       0,    35,    36,     0,     9,    21,    25,    37,    40,    41,
+      61,    13,    38,    15,    42,    39,    21,    46,    25,    43,
+      44,    61,    27,    28,    14,     6,    10,    12,    21,    38,
+      45,    47,    48,    50,    51,    60,    21,     3,     4,     5,
+      59,    18,    19,    20,    31,    52,    53,    54,    55,    58,
+      60,    53,    31,    56,    57,    61,    25,    29,    52,     7,
+      22,    24,    23,    24,    47,    33,    52,    30,    45,    58,
+      53,    55,    53,    25,    52,     8,    25,    49,    11,    53,
+      32,    45,    45,    24,    25,    53,    25,    47,    30,    43
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    34,    35,    36,    38,    37,    39,    39,    40,    41,
-      42,    42,    43,    44,    44,    44,    44,    44,    45,    45,
-      46,    47,    48,    48,    49,    50,    51,    51,    52,    52,
-      53,    53,    53,    54,    54,    54,    55,    55,    56,    57,
-      57,    58,    58,    58,    59,    60
+       0,    34,    36,    35,    37,    39,    38,    40,    40,    41,
+      42,    43,    43,    44,    45,    45,    45,    45,    45,    46,
+      46,    47,    48,    49,    49,    50,    51,    52,    52,    53,
+      53,    54,    54,    54,    55,    55,    55,    56,    56,    57,
+      58,    58,    59,    59,    59,    60,    61
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     4,     2,     0,     4,     3,     1,     1,     4,
-       3,     1,     1,     1,     1,     1,     1,     1,     1,     3,
-       3,     5,     2,     1,     6,    11,     1,     3,     3,     1,
-       1,     1,     1,     1,     1,     3,     4,     1,     1,     3,
-       1,     1,     1,     1,     2,     0
+       0,     2,     0,     5,     2,     0,     4,     3,     1,     1,
+       4,     3,     1,     1,     1,     1,     1,     1,     1,     1,
+       3,     3,     5,     3,     1,     6,    11,     1,     3,     3,
+       1,     1,     1,     1,     1,     1,     3,     4,     1,     1,
+       3,     1,     1,     1,     1,     2,     0
 };
 
 
@@ -1452,235 +1477,297 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 64 "trabalhoFinal.y"
-                                                     {printf("Programa\n");}
-#line 1458 "y.tab.c"
+#line 91 "trabalhoFinal.y"
+            {generateHeader();}
+#line 1483 "y.tab.c"
     break;
 
   case 3:
-#line 68 "trabalhoFinal.y"
-                                         {printf("corpo\n");}
-#line 1464 "y.tab.c"
+#line 92 "trabalhoFinal.y"
+                                                   {printf("Programa\n");}
+#line 1489 "y.tab.c"
     break;
 
   case 4:
-#line 71 "trabalhoFinal.y"
-                              {generateFooter();printf("comando composto\n");}
-#line 1470 "y.tab.c"
+#line 96 "trabalhoFinal.y"
+                                         {printf("corpo\n");}
+#line 1495 "y.tab.c"
     break;
 
   case 5:
-#line 73 "trabalhoFinal.y"
-                             {
-                        printLine();
-                    	// /* generate temporal vars for syso*/
-	                    defineVar("1syso_int_var",T_INT);
-	                    defineVar("1syso_float_var",T_REAL);
-                        generateHeader();
-                        }
-#line 1482 "y.tab.c"
+#line 99 "trabalhoFinal.y"
+                              {printf("comando composto\n");}
+#line 1501 "y.tab.c"
     break;
 
-  case 7:
-#line 83 "trabalhoFinal.y"
+  case 6:
+#line 101 "trabalhoFinal.y"
+                             { generateFooter();}
+#line 1507 "y.tab.c"
+    break;
+
+  case 8:
+#line 105 "trabalhoFinal.y"
                                  {printf("declaracoes\n");}
-#line 1488 "y.tab.c"
+#line 1513 "y.tab.c"
     break;
 
-  case 11:
-#line 106 "trabalhoFinal.y"
+  case 10:
+#line 112 "trabalhoFinal.y"
+                                                                {printf("%i\n",(yyvsp[0].sType));  
+
+    struct listIds *l;
+    l = (yyvsp[-2].id);
+    codeList = NULL;
+    while(l != NULL){
+        if((yyvsp[0].sType) == T_INT){
+            defineVar(l->nome,T_INT);
+        }else if ((yyvsp[0].sType) == T_REAL){
+            defineVar(l->nome,T_REAL);
+        }else if ((yyvsp[0].sType) == T_BOOL){
+            defineVar(l->nome,T_BOOL);
+        }
+        l = l->prox;
+    }
+
+}
+#line 1535 "y.tab.c"
+    break;
+
+  case 12:
+#line 133 "trabalhoFinal.y"
                                              {printf("lista de comandos\n");}
-#line 1494 "y.tab.c"
-    break;
-
-  case 13:
-#line 111 "trabalhoFinal.y"
-                                                         {printf("comando\n");}
-#line 1500 "y.tab.c"
+#line 1541 "y.tab.c"
     break;
 
   case 14:
-#line 112 "trabalhoFinal.y"
+#line 138 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1506 "y.tab.c"
+#line 1547 "y.tab.c"
     break;
 
   case 15:
-#line 113 "trabalhoFinal.y"
+#line 139 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1512 "y.tab.c"
+#line 1553 "y.tab.c"
     break;
 
   case 16:
-#line 114 "trabalhoFinal.y"
+#line 140 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1518 "y.tab.c"
+#line 1559 "y.tab.c"
     break;
 
   case 17:
-#line 115 "trabalhoFinal.y"
+#line 141 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1524 "y.tab.c"
+#line 1565 "y.tab.c"
     break;
 
   case 18:
-#line 118 "trabalhoFinal.y"
-                                                         {printf("lista ids\n");}
-#line 1530 "y.tab.c"
+#line 142 "trabalhoFinal.y"
+                                                         {printf("comando\n");}
+#line 1571 "y.tab.c"
     break;
 
   case 19:
-#line 119 "trabalhoFinal.y"
-                                                         {printf("lista ids\n");}
-#line 1536 "y.tab.c"
+#line 145 "trabalhoFinal.y"
+                                                         {
+        if(auxIds == 1){
+            struct listIds *p;
+            p = *(struct listaIds)(malloc(sizeof(struct listIds)*1));
+            p->num = auxIds -1;
+            p->nome = (yyvsp[0].idval);
+            p->prox = codeList;
+            codeList = p;
+            auxIds = 1;
+            (yyval.id) = codeList;
+        }else{
+            struct listIds *p;
+            p = *(struct listaIds)(malloc(sizeof(struct listIds)));
+            p->num = auxIds -1;
+            p->nome = (yyvsp[0].idval);
+            p->prox = codeList;
+            codeList = p;
+            auxIds = 1;
+            (yyval.id) = codeList;
+        }
+        printf("lista ids\n");
+    }
+#line 1598 "y.tab.c"
     break;
 
   case 20:
-#line 122 "trabalhoFinal.y"
-                                                         {printf("atribuicao\n");}
-#line 1542 "y.tab.c"
+#line 167 "trabalhoFinal.y"
+                                                         {
+            if(auxIds == 1){
+                struct listIds *p;
+                p = *(struct listaIds)(malloc(sizeof(struct listIds)));
+                p->num = auxIds -1;
+                p->nome = (yyvsp[0].idval);
+                p->prox = codeList;
+                codeList = p;
+                auxIds++;
+            }else{
+                struct listIds *p;
+                p = *(struct listaIds)(malloc(sizeof(struct listIds)));
+                p->num = auxIds -1;
+                p->nome = (yyvsp[0].idval);
+                p->prox = codeList;
+                codeList = p;
+                auxIds++;
+            }
+            printf("lista ids\n");
+    }
+#line 1623 "y.tab.c"
     break;
 
   case 21:
-#line 125 "trabalhoFinal.y"
-                                                                {printf("condicional\n");}
-#line 1548 "y.tab.c"
+#line 189 "trabalhoFinal.y"
+                                                         {printf("atribuicao\n");}
+#line 1629 "y.tab.c"
     break;
 
   case 22:
-#line 128 "trabalhoFinal.y"
-                                                                    {printf("condicionalAUX\n");}
-#line 1554 "y.tab.c"
+#line 192 "trabalhoFinal.y"
+                                                                {printf("condicional\n");}
+#line 1635 "y.tab.c"
     break;
 
   case 23:
-#line 129 "trabalhoFinal.y"
-                                                             {printf("condicionalAUX\n");}
-#line 1560 "y.tab.c"
+#line 195 "trabalhoFinal.y"
+                                                                              {printf("condicionalAUX\n");}
+#line 1641 "y.tab.c"
     break;
 
   case 24:
-#line 132 "trabalhoFinal.y"
-                                                                                            {printf("comando While\n");}
-#line 1566 "y.tab.c"
+#line 196 "trabalhoFinal.y"
+                                                                  {printf("condicionalAUX\n");}
+#line 1647 "y.tab.c"
     break;
 
   case 25:
-#line 135 "trabalhoFinal.y"
-                                                                                                                                                             {printf("comando For\n");}
-#line 1572 "y.tab.c"
+#line 199 "trabalhoFinal.y"
+                                                                                            {printf("comando While\n");}
+#line 1653 "y.tab.c"
     break;
 
   case 26:
-#line 138 "trabalhoFinal.y"
-                                                         {printf("expressao\n");}
-#line 1578 "y.tab.c"
+#line 202 "trabalhoFinal.y"
+                                                                                                                                                             {printf("comando For\n");}
+#line 1659 "y.tab.c"
     break;
 
   case 27:
-#line 139 "trabalhoFinal.y"
+#line 205 "trabalhoFinal.y"
                                                          {printf("expressao\n");}
-#line 1584 "y.tab.c"
+#line 1665 "y.tab.c"
     break;
 
   case 28:
-#line 142 "trabalhoFinal.y"
-                                                    {printf("EXP SIMPLES \n");}
-#line 1590 "y.tab.c"
+#line 206 "trabalhoFinal.y"
+                                                         {printf("expressao\n");}
+#line 1671 "y.tab.c"
     break;
 
   case 29:
-#line 143 "trabalhoFinal.y"
+#line 209 "trabalhoFinal.y"
                                                     {printf("EXP SIMPLES \n");}
-#line 1596 "y.tab.c"
+#line 1677 "y.tab.c"
     break;
 
   case 30:
-#line 146 "trabalhoFinal.y"
-                                                   {printf("literal \n");}
-#line 1602 "y.tab.c"
+#line 210 "trabalhoFinal.y"
+                                                    {printf("EXP SIMPLES \n");}
+#line 1683 "y.tab.c"
     break;
 
   case 31:
-#line 147 "trabalhoFinal.y"
+#line 213 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1608 "y.tab.c"
+#line 1689 "y.tab.c"
     break;
 
   case 32:
-#line 148 "trabalhoFinal.y"
+#line 214 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1614 "y.tab.c"
+#line 1695 "y.tab.c"
     break;
 
   case 33:
-#line 151 "trabalhoFinal.y"
-                                                    {printf("VARIAVEL \n");}
-#line 1620 "y.tab.c"
+#line 215 "trabalhoFinal.y"
+                                                   {printf("literal \n");}
+#line 1701 "y.tab.c"
     break;
 
   case 34:
-#line 152 "trabalhoFinal.y"
+#line 218 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1626 "y.tab.c"
+#line 1707 "y.tab.c"
     break;
 
   case 35:
-#line 153 "trabalhoFinal.y"
+#line 219 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1632 "y.tab.c"
+#line 1713 "y.tab.c"
     break;
 
-  case 37:
-#line 157 "trabalhoFinal.y"
+  case 36:
+#line 220 "trabalhoFinal.y"
+                                                    {printf("VARIAVEL \n");}
+#line 1719 "y.tab.c"
+    break;
+
+  case 38:
+#line 224 "trabalhoFinal.y"
                              {printf("TIPO \n");}
-#line 1638 "y.tab.c"
-    break;
-
-  case 39:
-#line 163 "trabalhoFinal.y"
-                         {printf("TERMO\n");}
-#line 1644 "y.tab.c"
+#line 1725 "y.tab.c"
     break;
 
   case 40:
-#line 164 "trabalhoFinal.y"
-                         {printf("TERMO - FATOR\n");}
-#line 1650 "y.tab.c"
+#line 230 "trabalhoFinal.y"
+                         {printf("TERMO\n");}
+#line 1731 "y.tab.c"
     break;
 
   case 41:
-#line 177 "trabalhoFinal.y"
-                   {printf("TIPO REAL\n");}
-#line 1656 "y.tab.c"
+#line 231 "trabalhoFinal.y"
+                         {printf("TERMO - FATOR\n");}
+#line 1737 "y.tab.c"
     break;
 
   case 42:
-#line 178 "trabalhoFinal.y"
-                   {printf("TIPO REAL\n");}
-#line 1662 "y.tab.c"
+#line 244 "trabalhoFinal.y"
+                   {(yyval.sType)=T_INT;printf("TIPO REAL\n");}
+#line 1743 "y.tab.c"
     break;
 
   case 43:
-#line 179 "trabalhoFinal.y"
-                   {printf("TIPO BOOL\n");}
-#line 1668 "y.tab.c"
+#line 245 "trabalhoFinal.y"
+                   {(yyval.sType)=T_REAL;printf("TIPO REAL\n");}
+#line 1749 "y.tab.c"
     break;
 
   case 44:
-#line 182 "trabalhoFinal.y"
-                             {printf("Variavel\n");}
-#line 1674 "y.tab.c"
+#line 246 "trabalhoFinal.y"
+                   {(yyval.sType)=T_BOOL;printf("TIPO BOOL\n");}
+#line 1755 "y.tab.c"
     break;
 
   case 45:
-#line 187 "trabalhoFinal.y"
+#line 249 "trabalhoFinal.y"
+                             {printf("Variavel\n");}
+#line 1761 "y.tab.c"
+    break;
+
+  case 46:
+#line 254 "trabalhoFinal.y"
        {printf("Vazio\n");}
-#line 1680 "y.tab.c"
+#line 1767 "y.tab.c"
     break;
 
 
-#line 1684 "y.tab.c"
+#line 1771 "y.tab.c"
 
       default: break;
     }
@@ -1912,13 +1999,14 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 191 "trabalhoFinal.y"
+#line 258 "trabalhoFinal.y"
 
 
 
 
 int main(int argv, char * argc[]) {
 	FILE *myfile;
+    file = fopen("output.j","w+");
 	if(argv == 1) 
 	{
 		myfile = fopen("input_code.txt", "r");
@@ -1953,8 +2041,8 @@ void yyerror(const char* s) {
 
 void generateHeader()
 {   
-    file = fopen("output.j","a+");
-    fprintf(file,".source %s","outfileName\n");
+    // file = fopen("output.j","w+");
+    fprintf(file,".source %s\n",outfileName);
 	fprintf(file,".class public test\n.super java/lang/Object\n\n"); //code for defining class
 	
     fprintf(file,".method public <init>()V /n");
@@ -1966,9 +2054,10 @@ void generateHeader()
 	fprintf(file,".method public static main([Ljava/lang/String;)V\n");
 	fprintf(file,".limit locals 100\n.limit stack 100\n");
 
-	// /* generate temporal vars for syso*/
-	// defineVar("1syso_int_var",T_INT);
-	// defineVar("1syso_float_var",T_REAL);
+	/* generate temporal vars for syso*/
+	defineVar("1syso_int_var",T_INT);
+	defineVar("1syso_float_var",T_REAL);
+    printLine();
 
 	// /*generate line*/
 	// fprintf(file, ".line 1");
@@ -1977,7 +2066,7 @@ void generateHeader()
 
 void generateFooter()
 {
-    file = fopen("output.j","a+");
+    // file = fopen("output.j","w+");
 	fprintf(file,"\nreturn\n");
 	fprintf(file,".end method\n");
 }
@@ -1987,20 +2076,24 @@ void generateFooter()
 //	codeList.push_back(x);
 //}
  
-void defineVar(char *lista_ids, int type){
-    file = fopen("output.j","a+");
+void defineVar(char *id, int type){
+    // file = fopen("output.j","w+");
 
     if(type == T_INT){
+        printf("%s\n", id);
         fprintf(file, "iconst_0\nistore %i\n", cont);
     }else if(type == T_BOOL){
+        printf("%s\n", id);
         fprintf(file, "iconst_0\nistore %i\n", cont);
     }else if(type == T_REAL){
+        printf("%s\n", id);
         fprintf(file, "fconst_0\nfstore %i\n", cont);
     }
     cont++;
 }
 
 void printLine(){
-    file = fopen("output.j","a+");
-    fprintf(file, ".line %i\n", cont);
+    // file = fopen("output.j","w+");
+    fprintf(file, ".line %i\n", lines);
+    lines++;
 }

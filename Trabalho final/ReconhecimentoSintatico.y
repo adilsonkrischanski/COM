@@ -23,7 +23,7 @@ int cont = 1;
 void generateHeader();
 void generateFooter();
 void defineVar(char *lista_ids, int type);
-void printLine();
+
 
 %}
 
@@ -68,15 +68,9 @@ programa: PROGRAM_WORD IDENTIFIER SEMI_COLON corpo   {printf("Programa\n");}
 corpo: declaracoes comandoComposto       {printf("corpo\n");}
      ;
      
-comandoComposto: BEGIN_WORD   {generateFooter();printf("comando composto\n");}
+comandoComposto: BEGIN_WORD   {printf("comando composto\n");}
                  listaDeComandos
-                 END_WORD    {
-                        printLine();
-                    	// /* generate temporal vars for syso*/
-	                    defineVar("1syso_int_var",T_INT);
-	                    defineVar("1syso_float_var",T_REAL);
-                        generateHeader();
-                        }
+                 END_WORD    {printf("comando composto\n");}       
                ;
 
 declaracoes: declaracoesaux declaracaoDeVariavel SEMI_COLON
@@ -86,20 +80,8 @@ declaracoes: declaracoesaux declaracaoDeVariavel SEMI_COLON
 declaracoesaux: declaracoes
               ;
 
-//string str($2);
 declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipoSimples  
     ;
-
-    // if($4 == T_INT){
-    //     defineVar("a",T_INT);
-    //     printf("intt");
-    // }else if ($4 == T_REAL){
-    //     defineVar(str,T_REAL);
-    //      printf("reall");
-    // }else if ($4 == T_BOOL){
-    //     defineVar("a",T_BOOL);
-    //      printf("Bool");
-    // }
 
 
 listaDeComandos: listaComandosaux comando SEMI_COLON
@@ -224,58 +206,4 @@ int main(int argv, char * argc[]) {
 void yyerror(const char* s) {
 	fprintf(stderr, "Erro de análise (sintática, Linha: %d): %s\n", lineCounter, s);
 	exit(1);
-}
-
-void generateHeader()
-{   
-    file = fopen("output.j","a+");
-    fprintf(file,".source %s","outfileName\n");
-	fprintf(file,".class public test\n.super java/lang/Object\n\n"); //code for defining class
-	
-    fprintf(file,".method public <init>()V /n");
-	fprintf(file,"aload_0\n");
-	fprintf(file,"invokenonvirtual java/lang/Object/<init>()V\n");
-	fprintf(file,"return\n");
-	fprintf(file,".end method\n\n");
-
-	fprintf(file,".method public static main([Ljava/lang/String;)V\n");
-	fprintf(file,".limit locals 100\n.limit stack 100\n");
-
-	// /* generate temporal vars for syso*/
-	// defineVar("1syso_int_var",T_INT);
-	// defineVar("1syso_float_var",T_REAL);
-
-	// /*generate line*/
-	// fprintf(file, ".line 1");
-    // fclose(file);
-}
-
-void generateFooter()
-{
-    file = fopen("output.j","a+");
-	fprintf(file,"\nreturn\n");
-	fprintf(file,".end method\n");
-}
-
-//void writeCode(char * x)
-//{
-//	codeList.push_back(x);
-//}
- 
-void defineVar(char *lista_ids, int type){
-    file = fopen("output.j","a+");
-
-    if(type == T_INT){
-        fprintf(file, "iconst_0\nistore %i\n", cont);
-    }else if(type == T_BOOL){
-        fprintf(file, "iconst_0\nistore %i\n", cont);
-    }else if(type == T_REAL){
-        fprintf(file, "fconst_0\nfstore %i\n", cont);
-    }
-    cont++;
-}
-
-void printLine(){
-    file = fopen("output.j","a+");
-    fprintf(file, ".line %i\n", cont);
 }
