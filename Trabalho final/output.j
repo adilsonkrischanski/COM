@@ -17,6 +17,10 @@ fstore 2
 .line 1
 iconst_0
 istore 3
+iconst_0
+istore 4
+iconst_0
+istore 5
 
 return
 .end method

@@ -113,11 +113,14 @@ declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipoSimples {printf("%i\n",$
 
     struct listIds *l;
     l = $2;
+    printf("Aqui: %s\n", l->nome);
     codeList = NULL;
     while(l != NULL){
         if($4 == T_INT){
+            printf("Alou\n");
             defineVar(l->nome,T_INT);
         }else if ($4 == T_REAL){
+            printf("Alou2\n");
             defineVar(l->nome,T_REAL);
         }else if ($4 == T_BOOL){
             defineVar(l->nome,T_BOOL);
@@ -143,45 +146,50 @@ comando: atribuicao                                      {printf("comando\n");}
        ;
 
 listaIds: IDENTIFIER                                     {
-        if(auxIds == 1){
+            if(auxIds == 1){
+                printf("Alou3\n");
+                struct listIds *p;
+                p = (malloc(sizeof(struct listIds)));
+                p->num = auxIds -1;
+                p->nome = $1;
+                p->prox = codeList;
+                codeList = p;
+                auxIds++;
+            }else{
+                printf("Alou4\n");
+                struct listIds *p;
+                p = (malloc(sizeof(struct listIds)));
+                p->num = auxIds -1;
+                p->nome = $1;
+                p->prox = codeList;
+                codeList = p;
+                auxIds++;
+            }
+        printf("lista ids\n");
+    }
+        | listaIds VIRGULA IDENTIFIER                    {
+            if(auxIds == 1){
+
             struct listIds *p;
-            p = *(struct listaIds)(malloc(sizeof(struct listIds)));
+            p = (malloc(sizeof(struct listIds)));
             p->num = auxIds -1;
-            p->nome = $1;
+            p->nome = $3;
             p->prox = codeList;
             codeList = p;
             auxIds = 1;
             $$ = codeList;
         }else{
+
             struct listIds *p;
-            p = *(struct listaIds)(malloc(sizeof(struct listIds)));
+            p = (malloc(sizeof(struct listIds)));
             p->num = auxIds -1;
-            p->nome = $1;
+            p->nome = $3;
             p->prox = codeList;
             codeList = p;
             auxIds = 1;
             $$ = codeList;
         }
-        printf("lista ids\n");
-    }
-        | listaIds VIRGULA IDENTIFIER                    {
-            if(auxIds == 1){
-                struct listIds *p;
-                p = *(struct listaIds)(malloc(sizeof(struct listIds)));
-                p->num = auxIds -1;
-                p->nome = $3;
-                p->prox = codeList;
-                codeList = p;
-                auxIds++;
-            }else{
-                struct listIds *p;
-                p = *(struct listaIds)(malloc(sizeof(struct listIds)));
-                p->num = auxIds -1;
-                p->nome = $3;
-                p->prox = codeList;
-                codeList = p;
-                auxIds++;
-            }
+
             printf("lista ids\n");
     }
         ;

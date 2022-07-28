@@ -622,13 +622,13 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
        0,    91,    91,    91,    96,    99,    99,   104,   105,   108,
-     112,   132,   133,   135,   138,   139,   140,   141,   142,   145,
-     167,   189,   192,   195,   196,   199,   202,   205,   206,   209,
-     210,   213,   214,   215,   218,   219,   220,   223,   224,   227,
-     230,   231,   244,   245,   246,   249,   254
+     112,   135,   136,   138,   141,   142,   143,   144,   145,   148,
+     170,   197,   200,   203,   204,   207,   210,   213,   214,   217,
+     218,   221,   222,   223,   226,   227,   228,   231,   232,   235,
+     238,   239,   252,   253,   254,   257,   262
 };
 #endif
 
@@ -1518,11 +1518,14 @@ yyreduce:
 
     struct listIds *l;
     l = (yyvsp[-2].id);
+    printf("Aqui: %s\n", l->nome);
     codeList = NULL;
     while(l != NULL){
         if((yyvsp[0].sType) == T_INT){
+            printf("Alou\n");
             defineVar(l->nome,T_INT);
         }else if ((yyvsp[0].sType) == T_REAL){
+            printf("Alou2\n");
             defineVar(l->nome,T_REAL);
         }else if ((yyvsp[0].sType) == T_BOOL){
             defineVar(l->nome,T_BOOL);
@@ -1531,51 +1534,79 @@ yyreduce:
     }
 
 }
-#line 1535 "y.tab.c"
+#line 1538 "y.tab.c"
     break;
 
   case 12:
-#line 133 "trabalhoFinal.y"
+#line 136 "trabalhoFinal.y"
                                              {printf("lista de comandos\n");}
-#line 1541 "y.tab.c"
+#line 1544 "y.tab.c"
     break;
 
   case 14:
-#line 138 "trabalhoFinal.y"
+#line 141 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1547 "y.tab.c"
+#line 1550 "y.tab.c"
     break;
 
   case 15:
-#line 139 "trabalhoFinal.y"
+#line 142 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1553 "y.tab.c"
+#line 1556 "y.tab.c"
     break;
 
   case 16:
-#line 140 "trabalhoFinal.y"
+#line 143 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1559 "y.tab.c"
+#line 1562 "y.tab.c"
     break;
 
   case 17:
-#line 141 "trabalhoFinal.y"
+#line 144 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1565 "y.tab.c"
+#line 1568 "y.tab.c"
     break;
 
   case 18:
-#line 142 "trabalhoFinal.y"
+#line 145 "trabalhoFinal.y"
                                                          {printf("comando\n");}
-#line 1571 "y.tab.c"
+#line 1574 "y.tab.c"
     break;
 
   case 19:
-#line 145 "trabalhoFinal.y"
+#line 148 "trabalhoFinal.y"
                                                          {
-        if(auxIds == 1){
+            if(auxIds == 1){
+                printf("Alou3\n");
+                struct listIds *p;
+                p = (malloc(sizeof(struct listIds)));
+                p->num = auxIds -1;
+                p->nome = (yyvsp[0].idval);
+                p->prox = codeList;
+                codeList = p;
+                auxIds++;
+            }else{
+                printf("Alou4\n");
+                struct listIds *p;
+                p = (malloc(sizeof(struct listIds)));
+                p->num = auxIds -1;
+                p->nome = (yyvsp[0].idval);
+                p->prox = codeList;
+                codeList = p;
+                auxIds++;
+            }
+        printf("lista ids\n");
+    }
+#line 1601 "y.tab.c"
+    break;
+
+  case 20:
+#line 170 "trabalhoFinal.y"
+                                                         {
+            if(auxIds == 1){
+
             struct listIds *p;
-            p = *(struct listaIds)(malloc(sizeof(struct listIds)*1));
+            p = (malloc(sizeof(struct listIds)));
             p->num = auxIds -1;
             p->nome = (yyvsp[0].idval);
             p->prox = codeList;
@@ -1583,8 +1614,9 @@ yyreduce:
             auxIds = 1;
             (yyval.id) = codeList;
         }else{
+
             struct listIds *p;
-            p = *(struct listaIds)(malloc(sizeof(struct listIds)));
+            p = (malloc(sizeof(struct listIds)));
             p->num = auxIds -1;
             p->nome = (yyvsp[0].idval);
             p->prox = codeList;
@@ -1592,182 +1624,158 @@ yyreduce:
             auxIds = 1;
             (yyval.id) = codeList;
         }
-        printf("lista ids\n");
-    }
-#line 1598 "y.tab.c"
-    break;
 
-  case 20:
-#line 167 "trabalhoFinal.y"
-                                                         {
-            if(auxIds == 1){
-                struct listIds *p;
-                p = *(struct listaIds)(malloc(sizeof(struct listIds)));
-                p->num = auxIds -1;
-                p->nome = (yyvsp[0].idval);
-                p->prox = codeList;
-                codeList = p;
-                auxIds++;
-            }else{
-                struct listIds *p;
-                p = *(struct listaIds)(malloc(sizeof(struct listIds)));
-                p->num = auxIds -1;
-                p->nome = (yyvsp[0].idval);
-                p->prox = codeList;
-                codeList = p;
-                auxIds++;
-            }
             printf("lista ids\n");
     }
-#line 1623 "y.tab.c"
+#line 1631 "y.tab.c"
     break;
 
   case 21:
-#line 189 "trabalhoFinal.y"
+#line 197 "trabalhoFinal.y"
                                                          {printf("atribuicao\n");}
-#line 1629 "y.tab.c"
+#line 1637 "y.tab.c"
     break;
 
   case 22:
-#line 192 "trabalhoFinal.y"
+#line 200 "trabalhoFinal.y"
                                                                 {printf("condicional\n");}
-#line 1635 "y.tab.c"
+#line 1643 "y.tab.c"
     break;
 
   case 23:
-#line 195 "trabalhoFinal.y"
+#line 203 "trabalhoFinal.y"
                                                                               {printf("condicionalAUX\n");}
-#line 1641 "y.tab.c"
+#line 1649 "y.tab.c"
     break;
 
   case 24:
-#line 196 "trabalhoFinal.y"
+#line 204 "trabalhoFinal.y"
                                                                   {printf("condicionalAUX\n");}
-#line 1647 "y.tab.c"
+#line 1655 "y.tab.c"
     break;
 
   case 25:
-#line 199 "trabalhoFinal.y"
+#line 207 "trabalhoFinal.y"
                                                                                             {printf("comando While\n");}
-#line 1653 "y.tab.c"
+#line 1661 "y.tab.c"
     break;
 
   case 26:
-#line 202 "trabalhoFinal.y"
+#line 210 "trabalhoFinal.y"
                                                                                                                                                              {printf("comando For\n");}
-#line 1659 "y.tab.c"
+#line 1667 "y.tab.c"
     break;
 
   case 27:
-#line 205 "trabalhoFinal.y"
+#line 213 "trabalhoFinal.y"
                                                          {printf("expressao\n");}
-#line 1665 "y.tab.c"
+#line 1673 "y.tab.c"
     break;
 
   case 28:
-#line 206 "trabalhoFinal.y"
+#line 214 "trabalhoFinal.y"
                                                          {printf("expressao\n");}
-#line 1671 "y.tab.c"
+#line 1679 "y.tab.c"
     break;
 
   case 29:
-#line 209 "trabalhoFinal.y"
+#line 217 "trabalhoFinal.y"
                                                     {printf("EXP SIMPLES \n");}
-#line 1677 "y.tab.c"
+#line 1685 "y.tab.c"
     break;
 
   case 30:
-#line 210 "trabalhoFinal.y"
+#line 218 "trabalhoFinal.y"
                                                     {printf("EXP SIMPLES \n");}
-#line 1683 "y.tab.c"
+#line 1691 "y.tab.c"
     break;
 
   case 31:
-#line 213 "trabalhoFinal.y"
+#line 221 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1689 "y.tab.c"
+#line 1697 "y.tab.c"
     break;
 
   case 32:
-#line 214 "trabalhoFinal.y"
+#line 222 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1695 "y.tab.c"
+#line 1703 "y.tab.c"
     break;
 
   case 33:
-#line 215 "trabalhoFinal.y"
+#line 223 "trabalhoFinal.y"
                                                    {printf("literal \n");}
-#line 1701 "y.tab.c"
+#line 1709 "y.tab.c"
     break;
 
   case 34:
-#line 218 "trabalhoFinal.y"
+#line 226 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1707 "y.tab.c"
+#line 1715 "y.tab.c"
     break;
 
   case 35:
-#line 219 "trabalhoFinal.y"
+#line 227 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1713 "y.tab.c"
+#line 1721 "y.tab.c"
     break;
 
   case 36:
-#line 220 "trabalhoFinal.y"
+#line 228 "trabalhoFinal.y"
                                                     {printf("VARIAVEL \n");}
-#line 1719 "y.tab.c"
+#line 1727 "y.tab.c"
     break;
 
   case 38:
-#line 224 "trabalhoFinal.y"
+#line 232 "trabalhoFinal.y"
                              {printf("TIPO \n");}
-#line 1725 "y.tab.c"
+#line 1733 "y.tab.c"
     break;
 
   case 40:
-#line 230 "trabalhoFinal.y"
+#line 238 "trabalhoFinal.y"
                          {printf("TERMO\n");}
-#line 1731 "y.tab.c"
+#line 1739 "y.tab.c"
     break;
 
   case 41:
-#line 231 "trabalhoFinal.y"
+#line 239 "trabalhoFinal.y"
                          {printf("TERMO - FATOR\n");}
-#line 1737 "y.tab.c"
+#line 1745 "y.tab.c"
     break;
 
   case 42:
-#line 244 "trabalhoFinal.y"
+#line 252 "trabalhoFinal.y"
                    {(yyval.sType)=T_INT;printf("TIPO REAL\n");}
-#line 1743 "y.tab.c"
+#line 1751 "y.tab.c"
     break;
 
   case 43:
-#line 245 "trabalhoFinal.y"
+#line 253 "trabalhoFinal.y"
                    {(yyval.sType)=T_REAL;printf("TIPO REAL\n");}
-#line 1749 "y.tab.c"
+#line 1757 "y.tab.c"
     break;
 
   case 44:
-#line 246 "trabalhoFinal.y"
+#line 254 "trabalhoFinal.y"
                    {(yyval.sType)=T_BOOL;printf("TIPO BOOL\n");}
-#line 1755 "y.tab.c"
+#line 1763 "y.tab.c"
     break;
 
   case 45:
-#line 249 "trabalhoFinal.y"
+#line 257 "trabalhoFinal.y"
                              {printf("Variavel\n");}
-#line 1761 "y.tab.c"
+#line 1769 "y.tab.c"
     break;
 
   case 46:
-#line 254 "trabalhoFinal.y"
+#line 262 "trabalhoFinal.y"
        {printf("Vazio\n");}
-#line 1767 "y.tab.c"
+#line 1775 "y.tab.c"
     break;
 
 
-#line 1771 "y.tab.c"
+#line 1779 "y.tab.c"
 
       default: break;
     }
@@ -1999,7 +2007,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 258 "trabalhoFinal.y"
+#line 266 "trabalhoFinal.y"
 
 
 
