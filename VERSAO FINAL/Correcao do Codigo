@@ -1,0 +1,41 @@
+program trabalhoFinal;
+var teste : boolean;
+var teste2 : boolean;
+var valor1 : integer;
+var valor2 : integer;
+var valorR: real;
+var a,g,i : integer;
+var vetor  : array [0 ,0, 0, 0, 0, 0, 0, 0, 0, 0] of integer;
+var matriz : array [10] of integer; 
+
+begin
+teste := false;
+teste2 := false;
+valor1 := 0;
+valor2 := 0;
+valorR := 0.0;
+a := 5;
+vetor[a] := 80;
+
+print('Digite um numero');
+read(a);
+
+do
+i := i+1;
+a := a+1;
+while (i<10);;
+
+print ('Incrementado algumas vezes a fica a');
+
+
+
+for(g:=1; g<10; 1;)
+print('teste');;;
+
+if a=15 then print('A=15');;
+
+if a=18 or a=20 then print('A igual a 18 ou 20');;
+
+if i=10 then print('Decorando o texto') else print ('OK');;
+
+end

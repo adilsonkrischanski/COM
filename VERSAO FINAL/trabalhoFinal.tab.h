@@ -1,0 +1,132 @@
+/* A Bison parser, made by GNU Bison 3.5.1.  */
+
+/* Bison interface for Yacc-like parsers in C
+
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
+/* As a special exception, you may create a larger work that contains
+   part or all of the Bison parser skeleton and distribute that work
+   under terms of your choice, so long as that work isn't itself a
+   parser generator using the skeleton or a modified version thereof
+   as a parser skeleton.  Alternatively, if you modify or redistribute
+   the parser skeleton itself, you may (at your option) remove this
+   special exception, which will cause the skeleton and the resulting
+   Bison output files to be licensed under the GNU General Public
+   License without this special exception.
+
+   This special exception was added by the Free Software Foundation in
+   version 2.2 of Bison.  */
+
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
+#ifndef YY_YY_TRABALHOFINAL_TAB_H_INCLUDED
+# define YY_YY_TRABALHOFINAL_TAB_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
+
+/* Token type.  */
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+  enum yytokentype
+  {
+    T_INT = 258,
+    T_REAL = 259,
+    T_BOOL = 260,
+    IF_WORD = 261,
+    THEN_WORD = 262,
+    ELSE_WORD = 263,
+    PROGRAM_WORD = 264,
+    WHILE_WORD = 265,
+    DO_WORD = 266,
+    FOR_WORD = 267,
+    BEGIN_WORD = 268,
+    END_WORD = 269,
+    VAR_WORD = 270,
+    ARRAY_WORD = 271,
+    OF_WORD = 272,
+    INT = 273,
+    FLOAT = 274,
+    BOOL = 275,
+    IDENTIFIER = 276,
+    OPAD = 277,
+    OPMUL = 278,
+    RELATIONAL = 279,
+    SEMI_COLON = 280,
+    PONTO_PONTO = 281,
+    VIRGULA = 282,
+    DOIS_PONTOS = 283,
+    ATRIBUICAO = 284,
+    RIGHT_BRACKET = 285,
+    LEFT_BRACKET = 286,
+    COLCHETES_FECHA = 287,
+    COLCHETES_ABRE = 288,
+    READ_WORD = 289,
+    PRINT_WORD = 290,
+    ASPAS = 291
+  };
+#endif
+
+/* Value type.  */
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+union YYSTYPE
+{
+#line 32 "trabalhoFinal.y"
+
+    int ival;
+    float fval;
+    int bval;
+    char * idval;
+    char * aopval;
+
+    struct listIds{
+		int num;
+        char *nome;
+        struct listIds *prox;
+    };
+    struct valorar *a;
+
+    struct listIds *id;
+    
+	struct {
+		int **trueList, **falseList;
+	} bexpr_type;
+	struct {
+		int **nextList;
+	} stmt_type;
+	int sType;
+
+
+#line 120 "trabalhoFinal.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
+# define YYSTYPE_IS_DECLARED 1
+#endif
+
+
+extern YYSTYPE yylval;
+
+int yyparse (void);
+
+#endif /* !YY_YY_TRABALHOFINAL_TAB_H_INCLUDED  */
