@@ -1,18 +1,22 @@
-Nonterminals useless in grammar
-
-    agregadoAux
-
-
 Terminals unused in grammar
 
-    ARRAY_WORD
-    OF_WORD
     PONTO_PONTO
 
 
-Rules useless in grammar
+Rules useless in parser due to conflicts
 
-   50 agregadoAux: COLCHETES_ABRE literal PONTO_PONTO literal COLCHETES_FECHA
+   60 idd: idd IDENTIFIER
+   61    | IDENTIFIER
+   62    | idd variavel
+   63    | variavel
+
+
+State 84 conflicts: 2 reduce/reduce
+State 90 conflicts: 1 shift/reduce
+State 97 conflicts: 6 reduce/reduce
+State 99 conflicts: 6 reduce/reduce
+State 110 conflicts: 6 reduce/reduce
+State 113 conflicts: 6 reduce/reduce
 
 
 Grammar
@@ -34,7 +38,7 @@ Grammar
 
     8 declaracoesaux: declaracoes
 
-    9 declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipoSimples
+    9 declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipo
 
    10 listaDeComandos: listaComandosaux comando SEMI_COLON
    11                | vazio
@@ -46,194 +50,242 @@ Grammar
    15        | comandoComposto
    16        | comandoFor
    17        | comandoWhile
+   18        | print
+   19        | read
 
-   18 listaIds: IDENTIFIER
-   19         | listaIds VIRGULA IDENTIFIER
+   20 listaIds: IDENTIFIER
+   21         | listaIds VIRGULA IDENTIFIER
 
-   20 atribuicao: variavel ATRIBUICAO termo
+   22 atribuicao: variavel ATRIBUICAO fator
+   23           | variavel ATRIBUICAO expressaoSimples
 
-   21 condicional: IF_WORD expressao THEN_WORD comando condicionalAUX
+   24 condicional: IF_WORD expressao THEN_WORD comando condicionalAUX
 
-   22 condicionalAUX: ELSE_WORD comando SEMI_COLON
-   23               | SEMI_COLON
+   25 condicionalAUX: ELSE_WORD comando SEMI_COLON
+   26               | SEMI_COLON
 
-   24 comandoWhile: WHILE_WORD expressaoSimples RELATIONAL expressaoSimples DO_WORD comando
+   27 comandoWhile: DO_WORD listaDeComandos WHILE_WORD LEFT_BRACKET expressao RIGHT_BRACKET SEMI_COLON
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
 
-   26 expressao: expressaoSimples
-   27          | expressaoSimples RELATIONAL expressaoSimples
+   29 expressao: expressaoSimples
+   30          | expressao RELATIONAL expressao
 
-   28 expressaoSimples: expressaoSimples OPAD termo
-   29                 | termo
+   31 expressaoSimples: expressaoSimples OPAD termo
+   32                 | termo
 
-   30 literal: intlit
-   31        | floatlit
-   32        | boollit
+   33 literal: intlit
+   34        | floatlit
+   35        | boollit
 
-   33 intlit: INT
+   36 intlit: INT
 
-   34 floatlit: FLOAT
+   37 floatlit: FLOAT
 
-   35 boollit: BOOL
+   38 boollit: BOOL
 
-   36 fator: variavel
-   37      | literal
-   38      | LEFT_BRACKET expressao RIGHT_BRACKET
+   39 fator: variavel
+   40      | literal
+   41      | LEFT_BRACKET expressao RIGHT_BRACKET
 
-   39 seletor: seletoraux COLCHETES_ABRE expressao COLCHETES_FECHA
-   40        | vazio
+   42 seletor: seletoraux COLCHETES_ABRE expressao COLCHETES_FECHA
+   43        | vazio
 
-   41 seletoraux: seletor
+   44 seletoraux: seletor
 
-   42 termo: termo opmul fator
-   43      | fator
+   45 termo: termo opmul fator
+   46      | fator
 
-   44 opmul: OPMUL
+   47 opmul: OPMUL
 
-   45 tipoSimples: T_INT
-   46            | T_REAL
-   47            | T_BOOL
+   48 agregadoAux: COLCHETES_ABRE lit COLCHETES_FECHA
 
-   48 variavel: IDENTIFIER seletor
+   49 lit: lit VIRGULA literal
+   50    | literal
 
-   49 vazio: %empty
+   51 tipo: tipoAgregado
+   52     | tipoSimples
+
+   53 tipoAgregado: ARRAY_WORD agregadoAux OF_WORD tipo
+
+   54 tipoSimples: T_INT
+   55            | T_REAL
+   56            | T_BOOL
+
+   57 variavel: IDENTIFIER seletor
+
+   58 vazio: %empty
+
+   59 print: PRINT_WORD LEFT_BRACKET ASPAS idd ASPAS RIGHT_BRACKET
+
+   60 idd: idd IDENTIFIER
+   61    | IDENTIFIER
+   62    | idd variavel
+   63    | variavel
+   64    | expressao
+   65    | idd expressao
+
+   66 read: READ_WORD LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    T_INT <ival> (258) 45
-    T_REAL <fval> (259) 46
-    T_BOOL <bval> (260) 47
-    IF_WORD (261) 21
-    THEN_WORD (262) 21
-    ELSE_WORD (263) 22
+    T_INT <ival> (258) 54
+    T_REAL <fval> (259) 55
+    T_BOOL <bval> (260) 56
+    IF_WORD (261) 24
+    THEN_WORD (262) 24
+    ELSE_WORD (263) 25
     PROGRAM_WORD (264) 2
-    WHILE_WORD (265) 24
-    DO_WORD (266) 24
-    FOR_WORD (267) 25
+    WHILE_WORD (265) 27
+    DO_WORD (266) 27
+    FOR_WORD (267) 28
     BEGIN_WORD (268) 5
     END_WORD (269) 5
     VAR_WORD (270) 9
-    ARRAY_WORD (271)
-    OF_WORD (272)
-    INT <ival> (273) 33
-    FLOAT <fval> (274) 34
-    BOOL <bval> (275) 35
-    IDENTIFIER <idval> (276) 2 18 19 48
-    OPAD <aopval> (277) 28
-    OPMUL <aopval> (278) 44
-    RELATIONAL <aopval> (279) 24 25 27
-    SEMI_COLON (280) 2 6 10 22 23 25
+    ARRAY_WORD (271) 53
+    OF_WORD (272) 53
+    INT <ival> (273) 36
+    FLOAT <fval> (274) 37
+    BOOL <bval> (275) 38
+    IDENTIFIER <idval> (276) 2 20 21 57 60 61 66
+    OPAD <aopval> (277) 31
+    OPMUL <aopval> (278) 47
+    RELATIONAL <aopval> (279) 28 30
+    SEMI_COLON (280) 2 6 10 25 26 27 28
     PONTO_PONTO (281)
-    VIRGULA (282) 19
+    VIRGULA (282) 21 49
     DOIS_PONTOS (283) 9
-    ATRIBUICAO (284) 20
-    RIGHT_BRACKET (285) 25 38
-    LEFT_BRACKET (286) 25 38
-    COLCHETES_FECHA (287) 39
-    COLCHETES_ABRE (288) 39
+    ATRIBUICAO (284) 22 23
+    RIGHT_BRACKET (285) 27 28 41 59 66
+    LEFT_BRACKET (286) 27 28 41 59 66
+    COLCHETES_FECHA (287) 42 48
+    COLCHETES_ABRE (288) 42 48
+    READ_WORD (289) 66
+    PRINT_WORD (290) 59
+    ASPAS (291) 59
 
 
 Nonterminals, with rules where they appear
 
-    $accept (34)
+    $accept (37)
         on left: 0
-    programa (35)
+    programa (38)
         on left: 2
         on right: 0
-    $@1 (36)
+    $@1 (39)
         on left: 1
         on right: 2
-    corpo (37)
+    corpo (40)
         on left: 3
         on right: 2
-    comandoComposto (38)
+    comandoComposto (41)
         on left: 5
         on right: 3 15
-    $@2 (39)
+    $@2 (42)
         on left: 4
         on right: 5
-    declaracoes (40)
+    declaracoes (43)
         on left: 6 7
         on right: 3 8
-    declaracoesaux (41)
+    declaracoesaux (44)
         on left: 8
         on right: 6
-    declaracaoDeVariavel (42)
+    declaracaoDeVariavel (45)
         on left: 9
         on right: 6
-    listaDeComandos (43)
+    listaDeComandos (46)
         on left: 10 11
-        on right: 5 12 25
-    listaComandosaux (44)
+        on right: 5 12 27 28
+    listaComandosaux (47)
         on left: 12
         on right: 10
-    comando (45)
-        on left: 13 14 15 16 17
-        on right: 10 21 22 24
-    listaIds <id> (46)
-        on left: 18 19
-        on right: 9 19
-    atribuicao (47)
-        on left: 20
-        on right: 13 25
-    condicional (48)
-        on left: 21
-        on right: 14
-    condicionalAUX (49)
+    comando (48)
+        on left: 13 14 15 16 17 18 19
+        on right: 10 24 25
+    listaIds <id> (49)
+        on left: 20 21
+        on right: 9 21
+    atribuicao (50)
         on left: 22 23
-        on right: 21
-    comandoWhile (50)
+        on right: 13 28
+    condicional (51)
         on left: 24
+        on right: 14
+    condicionalAUX (52)
+        on left: 25 26
+        on right: 24
+    comandoWhile (53)
+        on left: 27
         on right: 17
-    comandoFor (51)
-        on left: 25
+    comandoFor (54)
+        on left: 28
         on right: 16
-    expressao (52)
-        on left: 26 27
-        on right: 21 38 39
-    expressaoSimples (53)
-        on left: 28 29
-        on right: 24 25 26 27 28
-    literal <a> (54)
-        on left: 30 31 32
-        on right: 37
-    intlit <ival> (55)
-        on left: 33
-        on right: 30
-    floatlit <fval> (56)
-        on left: 34
-        on right: 31
-    boollit <bval> (57)
-        on left: 35
-        on right: 32
-    fator <a> (58)
-        on left: 36 37 38
-        on right: 42 43
-    seletor (59)
-        on left: 39 40
-        on right: 41 48
-    seletoraux (60)
-        on left: 41
-        on right: 39
-    termo <aopval> (61)
+    expressao (55)
+        on left: 29 30
+        on right: 24 27 30 41 42 64 65
+    expressaoSimples (56)
+        on left: 31 32
+        on right: 23 28 29 31
+    literal <a> (57)
+        on left: 33 34 35
+        on right: 40 49 50
+    intlit <ival> (58)
+        on left: 36
+        on right: 33
+    floatlit <fval> (59)
+        on left: 37
+        on right: 34
+    boollit <bval> (60)
+        on left: 38
+        on right: 35
+    fator <a> (61)
+        on left: 39 40 41
+        on right: 22 45 46
+    seletor (62)
         on left: 42 43
-        on right: 20 28 29 42
-    opmul <aopval> (62)
+        on right: 44 57
+    seletoraux (63)
         on left: 44
         on right: 42
-    tipoSimples <sType> (63)
-        on left: 45 46 47
-        on right: 9
-    variavel <idval> (64)
+    termo <aopval> (64)
+        on left: 45 46
+        on right: 31 32 45
+    opmul <aopval> (65)
+        on left: 47
+        on right: 45
+    agregadoAux (66)
         on left: 48
-        on right: 20 36
-    vazio (65)
-        on left: 49
-        on right: 7 11 40
+        on right: 53
+    lit (67)
+        on left: 49 50
+        on right: 48 49
+    tipo (68)
+        on left: 51 52
+        on right: 9 53
+    tipoAgregado (69)
+        on left: 53
+        on right: 51
+    tipoSimples <sType> (70)
+        on left: 54 55 56
+        on right: 52
+    variavel <idval> (71)
+        on left: 57
+        on right: 22 23 39 62 63
+    vazio (72)
+        on left: 58
+        on right: 7 11 43
+    print (73)
+        on left: 59
+        on right: 18
+    idd (74)
+        on left: 60 61 62 63 64 65
+        on right: 59 60 62 65
+    read (75)
+        on left: 66
+        on right: 19
 
 
 State 0
@@ -285,7 +337,7 @@ State 6
 
     2 programa: $@1 PROGRAM_WORD IDENTIFIER SEMI_COLON . corpo
 
-    $default  reduce using rule 49 (vazio)
+    $default  reduce using rule 58 (vazio)
 
     corpo           go to state 7
     declaracoes     go to state 8
@@ -346,7 +398,7 @@ State 12
 
 State 13
 
-    9 declaracaoDeVariavel: VAR_WORD . listaIds DOIS_PONTOS tipoSimples
+    9 declaracaoDeVariavel: VAR_WORD . listaIds DOIS_PONTOS tipo
 
     IDENTIFIER  shift, and go to state 16
 
@@ -364,7 +416,7 @@ State 15
 
     5 comandoComposto: BEGIN_WORD $@2 . listaDeComandos END_WORD
 
-    $default  reduce using rule 49 (vazio)
+    $default  reduce using rule 58 (vazio)
 
     listaDeComandos   go to state 19
     listaComandosaux  go to state 20
@@ -373,15 +425,15 @@ State 15
 
 State 16
 
-   18 listaIds: IDENTIFIER .
+   20 listaIds: IDENTIFIER .
 
-    $default  reduce using rule 18 (listaIds)
+    $default  reduce using rule 20 (listaIds)
 
 
 State 17
 
-    9 declaracaoDeVariavel: VAR_WORD listaIds . DOIS_PONTOS tipoSimples
-   19 listaIds: listaIds . VIRGULA IDENTIFIER
+    9 declaracaoDeVariavel: VAR_WORD listaIds . DOIS_PONTOS tipo
+   21 listaIds: listaIds . VIRGULA IDENTIFIER
 
     VIRGULA      shift, and go to state 22
     DOIS_PONTOS  shift, and go to state 23
@@ -409,18 +461,22 @@ State 20
    10 listaDeComandos: listaComandosaux . comando SEMI_COLON
 
     IF_WORD     shift, and go to state 25
-    WHILE_WORD  shift, and go to state 26
+    DO_WORD     shift, and go to state 26
     FOR_WORD    shift, and go to state 27
     BEGIN_WORD  shift, and go to state 11
     IDENTIFIER  shift, and go to state 28
+    READ_WORD   shift, and go to state 29
+    PRINT_WORD  shift, and go to state 30
 
-    comandoComposto  go to state 29
-    comando          go to state 30
-    atribuicao       go to state 31
-    condicional      go to state 32
-    comandoWhile     go to state 33
-    comandoFor       go to state 34
-    variavel         go to state 35
+    comandoComposto  go to state 31
+    comando          go to state 32
+    atribuicao       go to state 33
+    condicional      go to state 34
+    comandoWhile     go to state 35
+    comandoFor       go to state 36
+    variavel         go to state 37
+    print            go to state 38
+    read             go to state 39
 
 
 State 21
@@ -432,20 +488,23 @@ State 21
 
 State 22
 
-   19 listaIds: listaIds VIRGULA . IDENTIFIER
+   21 listaIds: listaIds VIRGULA . IDENTIFIER
 
-    IDENTIFIER  shift, and go to state 36
+    IDENTIFIER  shift, and go to state 40
 
 
 State 23
 
-    9 declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS . tipoSimples
+    9 declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS . tipo
 
-    T_INT   shift, and go to state 37
-    T_REAL  shift, and go to state 38
-    T_BOOL  shift, and go to state 39
+    T_INT       shift, and go to state 41
+    T_REAL      shift, and go to state 42
+    T_BOOL      shift, and go to state 43
+    ARRAY_WORD  shift, and go to state 44
 
-    tipoSimples  go to state 40
+    tipo          go to state 45
+    tipoAgregado  go to state 46
+    tipoSimples   go to state 47
 
 
 State 24
@@ -457,713 +516,1091 @@ State 24
 
 State 25
 
-   21 condicional: IF_WORD . expressao THEN_WORD comando condicionalAUX
+   24 condicional: IF_WORD . expressao THEN_WORD comando condicionalAUX
 
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
     IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
+    LEFT_BRACKET  shift, and go to state 51
 
-    expressao         go to state 45
-    expressaoSimples  go to state 46
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
+    expressao         go to state 52
+    expressaoSimples  go to state 53
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
 
 
 State 26
 
-   24 comandoWhile: WHILE_WORD . expressaoSimples RELATIONAL expressaoSimples DO_WORD comando
+   27 comandoWhile: DO_WORD . listaDeComandos WHILE_WORD LEFT_BRACKET expressao RIGHT_BRACKET SEMI_COLON
 
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
+    $default  reduce using rule 58 (vazio)
 
-    expressaoSimples  go to state 54
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
+    listaDeComandos   go to state 61
+    listaComandosaux  go to state 20
+    vazio             go to state 21
 
 
 State 27
 
-   25 comandoFor: FOR_WORD . LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
+   28 comandoFor: FOR_WORD . LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
 
-    LEFT_BRACKET  shift, and go to state 55
+    LEFT_BRACKET  shift, and go to state 62
 
 
 State 28
 
-   48 variavel: IDENTIFIER . seletor
+   57 variavel: IDENTIFIER . seletor
 
-    $default  reduce using rule 49 (vazio)
+    $default  reduce using rule 58 (vazio)
 
-    seletor     go to state 56
-    seletoraux  go to state 57
-    vazio       go to state 58
+    seletor     go to state 63
+    seletoraux  go to state 64
+    vazio       go to state 65
 
 
 State 29
+
+   66 read: READ_WORD . LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
+
+    LEFT_BRACKET  shift, and go to state 66
+
+
+State 30
+
+   59 print: PRINT_WORD . LEFT_BRACKET ASPAS idd ASPAS RIGHT_BRACKET
+
+    LEFT_BRACKET  shift, and go to state 67
+
+
+State 31
 
    15 comando: comandoComposto .
 
     $default  reduce using rule 15 (comando)
 
 
-State 30
+State 32
 
    10 listaDeComandos: listaComandosaux comando . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 59
+    SEMI_COLON  shift, and go to state 68
 
 
-State 31
+State 33
 
    13 comando: atribuicao .
 
     $default  reduce using rule 13 (comando)
 
 
-State 32
+State 34
 
    14 comando: condicional .
 
     $default  reduce using rule 14 (comando)
 
 
-State 33
+State 35
 
    17 comando: comandoWhile .
 
     $default  reduce using rule 17 (comando)
 
 
-State 34
+State 36
 
    16 comando: comandoFor .
 
     $default  reduce using rule 16 (comando)
 
 
-State 35
-
-   20 atribuicao: variavel . ATRIBUICAO termo
-
-    ATRIBUICAO  shift, and go to state 60
-
-
-State 36
-
-   19 listaIds: listaIds VIRGULA IDENTIFIER .
-
-    $default  reduce using rule 19 (listaIds)
-
-
 State 37
 
-   45 tipoSimples: T_INT .
+   22 atribuicao: variavel . ATRIBUICAO fator
+   23           | variavel . ATRIBUICAO expressaoSimples
 
-    $default  reduce using rule 45 (tipoSimples)
+    ATRIBUICAO  shift, and go to state 69
 
 
 State 38
 
-   46 tipoSimples: T_REAL .
+   18 comando: print .
 
-    $default  reduce using rule 46 (tipoSimples)
+    $default  reduce using rule 18 (comando)
 
 
 State 39
 
-   47 tipoSimples: T_BOOL .
+   19 comando: read .
 
-    $default  reduce using rule 47 (tipoSimples)
+    $default  reduce using rule 19 (comando)
 
 
 State 40
 
-    9 declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipoSimples .
+   21 listaIds: listaIds VIRGULA IDENTIFIER .
 
-    $default  reduce using rule 9 (declaracaoDeVariavel)
+    $default  reduce using rule 21 (listaIds)
 
 
 State 41
 
-   33 intlit: INT .
+   54 tipoSimples: T_INT .
 
-    $default  reduce using rule 33 (intlit)
+    $default  reduce using rule 54 (tipoSimples)
 
 
 State 42
 
-   34 floatlit: FLOAT .
+   55 tipoSimples: T_REAL .
 
-    $default  reduce using rule 34 (floatlit)
+    $default  reduce using rule 55 (tipoSimples)
 
 
 State 43
 
-   35 boollit: BOOL .
+   56 tipoSimples: T_BOOL .
 
-    $default  reduce using rule 35 (boollit)
+    $default  reduce using rule 56 (tipoSimples)
 
 
 State 44
 
-   38 fator: LEFT_BRACKET . expressao RIGHT_BRACKET
+   53 tipoAgregado: ARRAY_WORD . agregadoAux OF_WORD tipo
 
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
+    COLCHETES_ABRE  shift, and go to state 70
 
-    expressao         go to state 61
-    expressaoSimples  go to state 46
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
+    agregadoAux  go to state 71
 
 
 State 45
 
-   21 condicional: IF_WORD expressao . THEN_WORD comando condicionalAUX
+    9 declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipo .
 
-    THEN_WORD  shift, and go to state 62
+    $default  reduce using rule 9 (declaracaoDeVariavel)
 
 
 State 46
 
-   26 expressao: expressaoSimples .
-   27          | expressaoSimples . RELATIONAL expressaoSimples
-   28 expressaoSimples: expressaoSimples . OPAD termo
+   51 tipo: tipoAgregado .
 
-    OPAD        shift, and go to state 63
-    RELATIONAL  shift, and go to state 64
-
-    $default  reduce using rule 26 (expressao)
+    $default  reduce using rule 51 (tipo)
 
 
 State 47
 
-   37 fator: literal .
+   52 tipo: tipoSimples .
 
-    $default  reduce using rule 37 (fator)
+    $default  reduce using rule 52 (tipo)
 
 
 State 48
 
-   30 literal: intlit .
+   36 intlit: INT .
 
-    $default  reduce using rule 30 (literal)
+    $default  reduce using rule 36 (intlit)
 
 
 State 49
 
-   31 literal: floatlit .
+   37 floatlit: FLOAT .
 
-    $default  reduce using rule 31 (literal)
+    $default  reduce using rule 37 (floatlit)
 
 
 State 50
 
-   32 literal: boollit .
+   38 boollit: BOOL .
 
-    $default  reduce using rule 32 (literal)
+    $default  reduce using rule 38 (boollit)
 
 
 State 51
 
-   43 termo: fator .
+   41 fator: LEFT_BRACKET . expressao RIGHT_BRACKET
 
-    $default  reduce using rule 43 (termo)
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
+
+    expressao         go to state 72
+    expressaoSimples  go to state 53
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
 
 
 State 52
 
-   29 expressaoSimples: termo .
-   42 termo: termo . opmul fator
+   24 condicional: IF_WORD expressao . THEN_WORD comando condicionalAUX
+   30 expressao: expressao . RELATIONAL expressao
 
-    OPMUL  shift, and go to state 65
-
-    $default  reduce using rule 29 (expressaoSimples)
-
-    opmul  go to state 66
+    THEN_WORD   shift, and go to state 73
+    RELATIONAL  shift, and go to state 74
 
 
 State 53
 
-   36 fator: variavel .
+   29 expressao: expressaoSimples .
+   31 expressaoSimples: expressaoSimples . OPAD termo
 
-    $default  reduce using rule 36 (fator)
+    OPAD  shift, and go to state 75
+
+    $default  reduce using rule 29 (expressao)
 
 
 State 54
 
-   24 comandoWhile: WHILE_WORD expressaoSimples . RELATIONAL expressaoSimples DO_WORD comando
-   28 expressaoSimples: expressaoSimples . OPAD termo
+   40 fator: literal .
 
-    OPAD        shift, and go to state 63
-    RELATIONAL  shift, and go to state 67
+    $default  reduce using rule 40 (fator)
 
 
 State 55
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET . atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
+   33 literal: intlit .
 
-    IDENTIFIER  shift, and go to state 28
-
-    atribuicao  go to state 68
-    variavel    go to state 35
+    $default  reduce using rule 33 (literal)
 
 
 State 56
 
-   41 seletoraux: seletor .
-   48 variavel: IDENTIFIER seletor .
+   34 literal: floatlit .
 
-    COLCHETES_ABRE  reduce using rule 41 (seletoraux)
-    $default        reduce using rule 48 (variavel)
+    $default  reduce using rule 34 (literal)
 
 
 State 57
 
-   39 seletor: seletoraux . COLCHETES_ABRE expressao COLCHETES_FECHA
+   35 literal: boollit .
 
-    COLCHETES_ABRE  shift, and go to state 69
+    $default  reduce using rule 35 (literal)
 
 
 State 58
 
-   40 seletor: vazio .
+   46 termo: fator .
 
-    $default  reduce using rule 40 (seletor)
+    $default  reduce using rule 46 (termo)
 
 
 State 59
+
+   32 expressaoSimples: termo .
+   45 termo: termo . opmul fator
+
+    OPMUL  shift, and go to state 76
+
+    $default  reduce using rule 32 (expressaoSimples)
+
+    opmul  go to state 77
+
+
+State 60
+
+   39 fator: variavel .
+
+    $default  reduce using rule 39 (fator)
+
+
+State 61
+
+   12 listaComandosaux: listaDeComandos .
+   27 comandoWhile: DO_WORD listaDeComandos . WHILE_WORD LEFT_BRACKET expressao RIGHT_BRACKET SEMI_COLON
+
+    WHILE_WORD  shift, and go to state 78
+
+    $default  reduce using rule 12 (listaComandosaux)
+
+
+State 62
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET . atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
+
+    IDENTIFIER  shift, and go to state 28
+
+    atribuicao  go to state 79
+    variavel    go to state 37
+
+
+State 63
+
+   44 seletoraux: seletor .
+   57 variavel: IDENTIFIER seletor .
+
+    COLCHETES_ABRE  reduce using rule 44 (seletoraux)
+    $default        reduce using rule 57 (variavel)
+
+
+State 64
+
+   42 seletor: seletoraux . COLCHETES_ABRE expressao COLCHETES_FECHA
+
+    COLCHETES_ABRE  shift, and go to state 80
+
+
+State 65
+
+   43 seletor: vazio .
+
+    $default  reduce using rule 43 (seletor)
+
+
+State 66
+
+   66 read: READ_WORD LEFT_BRACKET . IDENTIFIER RIGHT_BRACKET
+
+    IDENTIFIER  shift, and go to state 81
+
+
+State 67
+
+   59 print: PRINT_WORD LEFT_BRACKET . ASPAS idd ASPAS RIGHT_BRACKET
+
+    ASPAS  shift, and go to state 82
+
+
+State 68
 
    10 listaDeComandos: listaComandosaux comando SEMI_COLON .
 
     $default  reduce using rule 10 (listaDeComandos)
 
 
-State 60
-
-   20 atribuicao: variavel ATRIBUICAO . termo
-
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
-
-    literal   go to state 47
-    intlit    go to state 48
-    floatlit  go to state 49
-    boollit   go to state 50
-    fator     go to state 51
-    termo     go to state 70
-    variavel  go to state 53
-
-
-State 61
-
-   38 fator: LEFT_BRACKET expressao . RIGHT_BRACKET
-
-    RIGHT_BRACKET  shift, and go to state 71
-
-
-State 62
-
-   21 condicional: IF_WORD expressao THEN_WORD . comando condicionalAUX
-
-    IF_WORD     shift, and go to state 25
-    WHILE_WORD  shift, and go to state 26
-    FOR_WORD    shift, and go to state 27
-    BEGIN_WORD  shift, and go to state 11
-    IDENTIFIER  shift, and go to state 28
-
-    comandoComposto  go to state 29
-    comando          go to state 72
-    atribuicao       go to state 31
-    condicional      go to state 32
-    comandoWhile     go to state 33
-    comandoFor       go to state 34
-    variavel         go to state 35
-
-
-State 63
-
-   28 expressaoSimples: expressaoSimples OPAD . termo
-
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
-
-    literal   go to state 47
-    intlit    go to state 48
-    floatlit  go to state 49
-    boollit   go to state 50
-    fator     go to state 51
-    termo     go to state 73
-    variavel  go to state 53
-
-
-State 64
-
-   27 expressao: expressaoSimples RELATIONAL . expressaoSimples
-
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
-
-    expressaoSimples  go to state 74
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
-
-
-State 65
-
-   44 opmul: OPMUL .
-
-    $default  reduce using rule 44 (opmul)
-
-
-State 66
-
-   42 termo: termo opmul . fator
-
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
-
-    literal   go to state 47
-    intlit    go to state 48
-    floatlit  go to state 49
-    boollit   go to state 50
-    fator     go to state 75
-    variavel  go to state 53
-
-
-State 67
-
-   24 comandoWhile: WHILE_WORD expressaoSimples RELATIONAL . expressaoSimples DO_WORD comando
-
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
-
-    expressaoSimples  go to state 76
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
-
-
-State 68
-
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao . SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
-
-    SEMI_COLON  shift, and go to state 77
-
-
 State 69
 
-   39 seletor: seletoraux COLCHETES_ABRE . expressao COLCHETES_FECHA
+   22 atribuicao: variavel ATRIBUICAO . fator
+   23           | variavel ATRIBUICAO . expressaoSimples
 
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
     IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
+    LEFT_BRACKET  shift, and go to state 51
 
-    expressao         go to state 78
-    expressaoSimples  go to state 46
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
+    expressaoSimples  go to state 83
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 84
+    termo             go to state 59
+    variavel          go to state 60
 
 
 State 70
 
-   20 atribuicao: variavel ATRIBUICAO termo .
-   42 termo: termo . opmul fator
+   48 agregadoAux: COLCHETES_ABRE . lit COLCHETES_FECHA
 
-    OPMUL  shift, and go to state 65
+    INT    shift, and go to state 48
+    FLOAT  shift, and go to state 49
+    BOOL   shift, and go to state 50
 
-    $default  reduce using rule 20 (atribuicao)
-
-    opmul  go to state 66
+    literal   go to state 85
+    intlit    go to state 55
+    floatlit  go to state 56
+    boollit   go to state 57
+    lit       go to state 86
 
 
 State 71
 
-   38 fator: LEFT_BRACKET expressao RIGHT_BRACKET .
+   53 tipoAgregado: ARRAY_WORD agregadoAux . OF_WORD tipo
 
-    $default  reduce using rule 38 (fator)
+    OF_WORD  shift, and go to state 87
 
 
 State 72
 
-   21 condicional: IF_WORD expressao THEN_WORD comando . condicionalAUX
+   30 expressao: expressao . RELATIONAL expressao
+   41 fator: LEFT_BRACKET expressao . RIGHT_BRACKET
 
-    ELSE_WORD   shift, and go to state 79
-    SEMI_COLON  shift, and go to state 80
-
-    condicionalAUX  go to state 81
+    RELATIONAL     shift, and go to state 74
+    RIGHT_BRACKET  shift, and go to state 88
 
 
 State 73
 
-   28 expressaoSimples: expressaoSimples OPAD termo .
-   42 termo: termo . opmul fator
+   24 condicional: IF_WORD expressao THEN_WORD . comando condicionalAUX
 
-    OPMUL  shift, and go to state 65
+    IF_WORD     shift, and go to state 25
+    DO_WORD     shift, and go to state 26
+    FOR_WORD    shift, and go to state 27
+    BEGIN_WORD  shift, and go to state 11
+    IDENTIFIER  shift, and go to state 28
+    READ_WORD   shift, and go to state 29
+    PRINT_WORD  shift, and go to state 30
 
-    $default  reduce using rule 28 (expressaoSimples)
-
-    opmul  go to state 66
+    comandoComposto  go to state 31
+    comando          go to state 89
+    atribuicao       go to state 33
+    condicional      go to state 34
+    comandoWhile     go to state 35
+    comandoFor       go to state 36
+    variavel         go to state 37
+    print            go to state 38
+    read             go to state 39
 
 
 State 74
 
-   27 expressao: expressaoSimples RELATIONAL expressaoSimples .
-   28 expressaoSimples: expressaoSimples . OPAD termo
+   30 expressao: expressao RELATIONAL . expressao
 
-    OPAD  shift, and go to state 63
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
 
-    $default  reduce using rule 27 (expressao)
+    expressao         go to state 90
+    expressaoSimples  go to state 53
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
 
 
 State 75
 
-   42 termo: termo opmul fator .
+   31 expressaoSimples: expressaoSimples OPAD . termo
 
-    $default  reduce using rule 42 (termo)
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
+
+    literal   go to state 54
+    intlit    go to state 55
+    floatlit  go to state 56
+    boollit   go to state 57
+    fator     go to state 58
+    termo     go to state 91
+    variavel  go to state 60
 
 
 State 76
 
-   24 comandoWhile: WHILE_WORD expressaoSimples RELATIONAL expressaoSimples . DO_WORD comando
-   28 expressaoSimples: expressaoSimples . OPAD termo
+   47 opmul: OPMUL .
 
-    DO_WORD  shift, and go to state 82
-    OPAD     shift, and go to state 63
+    $default  reduce using rule 47 (opmul)
 
 
 State 77
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON . expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
+   45 termo: termo opmul . fator
 
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
     IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
+    LEFT_BRACKET  shift, and go to state 51
 
-    expressaoSimples  go to state 83
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
+    literal   go to state 54
+    intlit    go to state 55
+    floatlit  go to state 56
+    boollit   go to state 57
+    fator     go to state 92
+    variavel  go to state 60
 
 
 State 78
 
-   39 seletor: seletoraux COLCHETES_ABRE expressao . COLCHETES_FECHA
+   27 comandoWhile: DO_WORD listaDeComandos WHILE_WORD . LEFT_BRACKET expressao RIGHT_BRACKET SEMI_COLON
 
-    COLCHETES_FECHA  shift, and go to state 84
+    LEFT_BRACKET  shift, and go to state 93
 
 
 State 79
 
-   22 condicionalAUX: ELSE_WORD . comando SEMI_COLON
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao . SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
 
-    IF_WORD     shift, and go to state 25
-    WHILE_WORD  shift, and go to state 26
-    FOR_WORD    shift, and go to state 27
-    BEGIN_WORD  shift, and go to state 11
-    IDENTIFIER  shift, and go to state 28
-
-    comandoComposto  go to state 29
-    comando          go to state 85
-    atribuicao       go to state 31
-    condicional      go to state 32
-    comandoWhile     go to state 33
-    comandoFor       go to state 34
-    variavel         go to state 35
+    SEMI_COLON  shift, and go to state 94
 
 
 State 80
 
-   23 condicionalAUX: SEMI_COLON .
+   42 seletor: seletoraux COLCHETES_ABRE . expressao COLCHETES_FECHA
 
-    $default  reduce using rule 23 (condicionalAUX)
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
+
+    expressao         go to state 95
+    expressaoSimples  go to state 53
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
 
 
 State 81
 
-   21 condicional: IF_WORD expressao THEN_WORD comando condicionalAUX .
+   66 read: READ_WORD LEFT_BRACKET IDENTIFIER . RIGHT_BRACKET
 
-    $default  reduce using rule 21 (condicional)
+    RIGHT_BRACKET  shift, and go to state 96
 
 
 State 82
 
-   24 comandoWhile: WHILE_WORD expressaoSimples RELATIONAL expressaoSimples DO_WORD . comando
+   59 print: PRINT_WORD LEFT_BRACKET ASPAS . idd ASPAS RIGHT_BRACKET
 
-    IF_WORD     shift, and go to state 25
-    WHILE_WORD  shift, and go to state 26
-    FOR_WORD    shift, and go to state 27
-    BEGIN_WORD  shift, and go to state 11
-    IDENTIFIER  shift, and go to state 28
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 97
+    LEFT_BRACKET  shift, and go to state 51
 
-    comandoComposto  go to state 29
-    comando          go to state 86
-    atribuicao       go to state 31
-    condicional      go to state 32
-    comandoWhile     go to state 33
-    comandoFor       go to state 34
-    variavel         go to state 35
+    expressao         go to state 98
+    expressaoSimples  go to state 53
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 99
+    idd               go to state 100
 
 
 State 83
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples . RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
-   28 expressaoSimples: expressaoSimples . OPAD termo
+   23 atribuicao: variavel ATRIBUICAO expressaoSimples .
+   31 expressaoSimples: expressaoSimples . OPAD termo
 
-    OPAD        shift, and go to state 63
-    RELATIONAL  shift, and go to state 87
+    OPAD  shift, and go to state 75
+
+    $default  reduce using rule 23 (atribuicao)
 
 
 State 84
 
-   39 seletor: seletoraux COLCHETES_ABRE expressao COLCHETES_FECHA .
+   22 atribuicao: variavel ATRIBUICAO fator .
+   46 termo: fator .
 
-    $default  reduce using rule 39 (seletor)
+    ELSE_WORD   reduce using rule 22 (atribuicao)
+    ELSE_WORD   [reduce using rule 46 (termo)]
+    OPAD        reduce using rule 46 (termo)
+    OPMUL       reduce using rule 46 (termo)
+    SEMI_COLON  reduce using rule 22 (atribuicao)
+    SEMI_COLON  [reduce using rule 46 (termo)]
+    $default    reduce using rule 22 (atribuicao)
 
 
 State 85
 
-   22 condicionalAUX: ELSE_WORD comando . SEMI_COLON
+   50 lit: literal .
 
-    SEMI_COLON  shift, and go to state 88
+    $default  reduce using rule 50 (lit)
 
 
 State 86
 
-   24 comandoWhile: WHILE_WORD expressaoSimples RELATIONAL expressaoSimples DO_WORD comando .
+   48 agregadoAux: COLCHETES_ABRE lit . COLCHETES_FECHA
+   49 lit: lit . VIRGULA literal
 
-    $default  reduce using rule 24 (comandoWhile)
+    VIRGULA          shift, and go to state 101
+    COLCHETES_FECHA  shift, and go to state 102
 
 
 State 87
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL . expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
+   53 tipoAgregado: ARRAY_WORD agregadoAux OF_WORD . tipo
 
-    INT           shift, and go to state 41
-    FLOAT         shift, and go to state 42
-    BOOL          shift, and go to state 43
-    IDENTIFIER    shift, and go to state 28
-    LEFT_BRACKET  shift, and go to state 44
+    T_INT       shift, and go to state 41
+    T_REAL      shift, and go to state 42
+    T_BOOL      shift, and go to state 43
+    ARRAY_WORD  shift, and go to state 44
 
-    expressaoSimples  go to state 89
-    literal           go to state 47
-    intlit            go to state 48
-    floatlit          go to state 49
-    boollit           go to state 50
-    fator             go to state 51
-    termo             go to state 52
-    variavel          go to state 53
+    tipo          go to state 103
+    tipoAgregado  go to state 46
+    tipoSimples   go to state 47
 
 
 State 88
 
-   22 condicionalAUX: ELSE_WORD comando SEMI_COLON .
+   41 fator: LEFT_BRACKET expressao RIGHT_BRACKET .
 
-    $default  reduce using rule 22 (condicionalAUX)
+    $default  reduce using rule 41 (fator)
 
 
 State 89
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples . SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos
-   28 expressaoSimples: expressaoSimples . OPAD termo
+   24 condicional: IF_WORD expressao THEN_WORD comando . condicionalAUX
 
-    OPAD        shift, and go to state 63
-    SEMI_COLON  shift, and go to state 90
+    ELSE_WORD   shift, and go to state 104
+    SEMI_COLON  shift, and go to state 105
+
+    condicionalAUX  go to state 106
 
 
 State 90
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON . atribuicao RIGHT_BRACKET listaDeComandos
+   30 expressao: expressao . RELATIONAL expressao
+   30          | expressao RELATIONAL expressao .
 
-    IDENTIFIER  shift, and go to state 28
+    RELATIONAL  shift, and go to state 74
 
-    atribuicao  go to state 91
-    variavel    go to state 35
+    RELATIONAL  [reduce using rule 30 (expressao)]
+    $default    reduce using rule 30 (expressao)
 
 
 State 91
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao . RIGHT_BRACKET listaDeComandos
+   31 expressaoSimples: expressaoSimples OPAD termo .
+   45 termo: termo . opmul fator
 
-    RIGHT_BRACKET  shift, and go to state 92
+    OPMUL  shift, and go to state 76
+
+    $default  reduce using rule 31 (expressaoSimples)
+
+    opmul  go to state 77
 
 
 State 92
 
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET . listaDeComandos
+   45 termo: termo opmul fator .
 
-    $default  reduce using rule 49 (vazio)
-
-    listaDeComandos   go to state 93
-    listaComandosaux  go to state 20
-    vazio             go to state 21
+    $default  reduce using rule 45 (termo)
 
 
 State 93
 
-   12 listaComandosaux: listaDeComandos .
-   25 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos .
+   27 comandoWhile: DO_WORD listaDeComandos WHILE_WORD LEFT_BRACKET . expressao RIGHT_BRACKET SEMI_COLON
 
-    ELSE_WORD   reduce using rule 25 (comandoFor)
-    SEMI_COLON  reduce using rule 25 (comandoFor)
-    $default    reduce using rule 12 (listaComandosaux)
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
+
+    expressao         go to state 107
+    expressaoSimples  go to state 53
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
+
+
+State 94
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON . expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
+
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
+
+    expressaoSimples  go to state 108
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
+
+
+State 95
+
+   30 expressao: expressao . RELATIONAL expressao
+   42 seletor: seletoraux COLCHETES_ABRE expressao . COLCHETES_FECHA
+
+    RELATIONAL       shift, and go to state 74
+    COLCHETES_FECHA  shift, and go to state 109
+
+
+State 96
+
+   66 read: READ_WORD LEFT_BRACKET IDENTIFIER RIGHT_BRACKET .
+
+    $default  reduce using rule 66 (read)
+
+
+State 97
+
+   57 variavel: IDENTIFIER . seletor
+   61 idd: IDENTIFIER .
+
+    INT           reduce using rule 58 (vazio)
+    INT           [reduce using rule 61 (idd)]
+    FLOAT         reduce using rule 58 (vazio)
+    FLOAT         [reduce using rule 61 (idd)]
+    BOOL          reduce using rule 58 (vazio)
+    BOOL          [reduce using rule 61 (idd)]
+    IDENTIFIER    reduce using rule 58 (vazio)
+    IDENTIFIER    [reduce using rule 61 (idd)]
+    LEFT_BRACKET  reduce using rule 58 (vazio)
+    LEFT_BRACKET  [reduce using rule 61 (idd)]
+    ASPAS         reduce using rule 58 (vazio)
+    ASPAS         [reduce using rule 61 (idd)]
+    $default      reduce using rule 58 (vazio)
+
+    seletor     go to state 63
+    seletoraux  go to state 64
+    vazio       go to state 65
+
+
+State 98
+
+   30 expressao: expressao . RELATIONAL expressao
+   64 idd: expressao .
+
+    RELATIONAL  shift, and go to state 74
+
+    $default  reduce using rule 64 (idd)
+
+
+State 99
+
+   39 fator: variavel .
+   63 idd: variavel .
+
+    INT           reduce using rule 39 (fator)
+    INT           [reduce using rule 63 (idd)]
+    FLOAT         reduce using rule 39 (fator)
+    FLOAT         [reduce using rule 63 (idd)]
+    BOOL          reduce using rule 39 (fator)
+    BOOL          [reduce using rule 63 (idd)]
+    IDENTIFIER    reduce using rule 39 (fator)
+    IDENTIFIER    [reduce using rule 63 (idd)]
+    LEFT_BRACKET  reduce using rule 39 (fator)
+    LEFT_BRACKET  [reduce using rule 63 (idd)]
+    ASPAS         reduce using rule 39 (fator)
+    ASPAS         [reduce using rule 63 (idd)]
+    $default      reduce using rule 39 (fator)
+
+
+State 100
+
+   59 print: PRINT_WORD LEFT_BRACKET ASPAS idd . ASPAS RIGHT_BRACKET
+   60 idd: idd . IDENTIFIER
+   62    | idd . variavel
+   65    | idd . expressao
+
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 110
+    LEFT_BRACKET  shift, and go to state 51
+    ASPAS         shift, and go to state 111
+
+    expressao         go to state 112
+    expressaoSimples  go to state 53
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 113
+
+
+State 101
+
+   49 lit: lit VIRGULA . literal
+
+    INT    shift, and go to state 48
+    FLOAT  shift, and go to state 49
+    BOOL   shift, and go to state 50
+
+    literal   go to state 114
+    intlit    go to state 55
+    floatlit  go to state 56
+    boollit   go to state 57
+
+
+State 102
+
+   48 agregadoAux: COLCHETES_ABRE lit COLCHETES_FECHA .
+
+    $default  reduce using rule 48 (agregadoAux)
+
+
+State 103
+
+   53 tipoAgregado: ARRAY_WORD agregadoAux OF_WORD tipo .
+
+    $default  reduce using rule 53 (tipoAgregado)
+
+
+State 104
+
+   25 condicionalAUX: ELSE_WORD . comando SEMI_COLON
+
+    IF_WORD     shift, and go to state 25
+    DO_WORD     shift, and go to state 26
+    FOR_WORD    shift, and go to state 27
+    BEGIN_WORD  shift, and go to state 11
+    IDENTIFIER  shift, and go to state 28
+    READ_WORD   shift, and go to state 29
+    PRINT_WORD  shift, and go to state 30
+
+    comandoComposto  go to state 31
+    comando          go to state 115
+    atribuicao       go to state 33
+    condicional      go to state 34
+    comandoWhile     go to state 35
+    comandoFor       go to state 36
+    variavel         go to state 37
+    print            go to state 38
+    read             go to state 39
+
+
+State 105
+
+   26 condicionalAUX: SEMI_COLON .
+
+    $default  reduce using rule 26 (condicionalAUX)
+
+
+State 106
+
+   24 condicional: IF_WORD expressao THEN_WORD comando condicionalAUX .
+
+    $default  reduce using rule 24 (condicional)
+
+
+State 107
+
+   27 comandoWhile: DO_WORD listaDeComandos WHILE_WORD LEFT_BRACKET expressao . RIGHT_BRACKET SEMI_COLON
+   30 expressao: expressao . RELATIONAL expressao
+
+    RELATIONAL     shift, and go to state 74
+    RIGHT_BRACKET  shift, and go to state 116
+
+
+State 108
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples . RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
+   31 expressaoSimples: expressaoSimples . OPAD termo
+
+    OPAD        shift, and go to state 75
+    RELATIONAL  shift, and go to state 117
+
+
+State 109
+
+   42 seletor: seletoraux COLCHETES_ABRE expressao COLCHETES_FECHA .
+
+    $default  reduce using rule 42 (seletor)
+
+
+State 110
+
+   57 variavel: IDENTIFIER . seletor
+   60 idd: idd IDENTIFIER .
+
+    INT           reduce using rule 58 (vazio)
+    INT           [reduce using rule 60 (idd)]
+    FLOAT         reduce using rule 58 (vazio)
+    FLOAT         [reduce using rule 60 (idd)]
+    BOOL          reduce using rule 58 (vazio)
+    BOOL          [reduce using rule 60 (idd)]
+    IDENTIFIER    reduce using rule 58 (vazio)
+    IDENTIFIER    [reduce using rule 60 (idd)]
+    LEFT_BRACKET  reduce using rule 58 (vazio)
+    LEFT_BRACKET  [reduce using rule 60 (idd)]
+    ASPAS         reduce using rule 58 (vazio)
+    ASPAS         [reduce using rule 60 (idd)]
+    $default      reduce using rule 58 (vazio)
+
+    seletor     go to state 63
+    seletoraux  go to state 64
+    vazio       go to state 65
+
+
+State 111
+
+   59 print: PRINT_WORD LEFT_BRACKET ASPAS idd ASPAS . RIGHT_BRACKET
+
+    RIGHT_BRACKET  shift, and go to state 118
+
+
+State 112
+
+   30 expressao: expressao . RELATIONAL expressao
+   65 idd: idd expressao .
+
+    RELATIONAL  shift, and go to state 74
+
+    $default  reduce using rule 65 (idd)
+
+
+State 113
+
+   39 fator: variavel .
+   62 idd: idd variavel .
+
+    INT           reduce using rule 39 (fator)
+    INT           [reduce using rule 62 (idd)]
+    FLOAT         reduce using rule 39 (fator)
+    FLOAT         [reduce using rule 62 (idd)]
+    BOOL          reduce using rule 39 (fator)
+    BOOL          [reduce using rule 62 (idd)]
+    IDENTIFIER    reduce using rule 39 (fator)
+    IDENTIFIER    [reduce using rule 62 (idd)]
+    LEFT_BRACKET  reduce using rule 39 (fator)
+    LEFT_BRACKET  [reduce using rule 62 (idd)]
+    ASPAS         reduce using rule 39 (fator)
+    ASPAS         [reduce using rule 62 (idd)]
+    $default      reduce using rule 39 (fator)
+
+
+State 114
+
+   49 lit: lit VIRGULA literal .
+
+    $default  reduce using rule 49 (lit)
+
+
+State 115
+
+   25 condicionalAUX: ELSE_WORD comando . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 119
+
+
+State 116
+
+   27 comandoWhile: DO_WORD listaDeComandos WHILE_WORD LEFT_BRACKET expressao RIGHT_BRACKET . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 120
+
+
+State 117
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL . expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
+
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
+
+    expressaoSimples  go to state 121
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
+
+
+State 118
+
+   59 print: PRINT_WORD LEFT_BRACKET ASPAS idd ASPAS RIGHT_BRACKET .
+
+    $default  reduce using rule 59 (print)
+
+
+State 119
+
+   25 condicionalAUX: ELSE_WORD comando SEMI_COLON .
+
+    $default  reduce using rule 25 (condicionalAUX)
+
+
+State 120
+
+   27 comandoWhile: DO_WORD listaDeComandos WHILE_WORD LEFT_BRACKET expressao RIGHT_BRACKET SEMI_COLON .
+
+    $default  reduce using rule 27 (comandoWhile)
+
+
+State 121
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples . SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
+   31 expressaoSimples: expressaoSimples . OPAD termo
+
+    OPAD        shift, and go to state 75
+    SEMI_COLON  shift, and go to state 122
+
+
+State 122
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON . expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
+
+    INT           shift, and go to state 48
+    FLOAT         shift, and go to state 49
+    BOOL          shift, and go to state 50
+    IDENTIFIER    shift, and go to state 28
+    LEFT_BRACKET  shift, and go to state 51
+
+    expressaoSimples  go to state 123
+    literal           go to state 54
+    intlit            go to state 55
+    floatlit          go to state 56
+    boollit           go to state 57
+    fator             go to state 58
+    termo             go to state 59
+    variavel          go to state 60
+
+
+State 123
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples . SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON
+   31 expressaoSimples: expressaoSimples . OPAD termo
+
+    OPAD        shift, and go to state 75
+    SEMI_COLON  shift, and go to state 124
+
+
+State 124
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON . RIGHT_BRACKET listaDeComandos SEMI_COLON
+
+    RIGHT_BRACKET  shift, and go to state 125
+
+
+State 125
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET . listaDeComandos SEMI_COLON
+
+    $default  reduce using rule 58 (vazio)
+
+    listaDeComandos   go to state 126
+    listaComandosaux  go to state 20
+    vazio             go to state 21
+
+
+State 126
+
+   12 listaComandosaux: listaDeComandos .
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos . SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 127
+
+    $default  reduce using rule 12 (listaComandosaux)
+
+
+State 127
+
+   28 comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET listaDeComandos SEMI_COLON .
+
+    $default  reduce using rule 28 (comandoFor)

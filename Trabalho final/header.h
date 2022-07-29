@@ -17,4 +17,3 @@ void printLine();
 void printSimb();
 int findVar(char *nome);
 void printnoj(int var);
-char * toString(int a, float v);

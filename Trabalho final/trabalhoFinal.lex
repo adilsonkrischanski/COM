@@ -29,33 +29,37 @@ RELACIONAIS "="|"<>"|">"|">="|"<"|"<="
 OP_AD "+"|"-"|"or"
 OP_MUL "*"|"/"|"and"
 BINARIO "true"|"false"
+ASPAS "'"
 
 
 
 %%
 
-"integer"    {return T_INT;}
-"real"       {return T_REAL;}
-"boolean"    {return T_BOOL;}
-"if"         {return IF_WORD;}
-"then"       {return THEN_WORD;}
-"program"    {return PROGRAM_WORD;}
-"else"       {return ELSE_WORD;}
-"while"	     {return WHILE_WORD;}
-"do"	     {return DO_WORD;}
-"for"	     {return FOR_WORD;}
-"begin"      {return BEGIN_WORD;}
-"end"        {return END_WORD;}
-"var"        {return VAR_WORD;}
-"array"      {return ARRAY_WORD;}
-"of"         {return OF_WORD;}
-{OP_AD}      {yylval.aopval = strdup(yytext);return OPAD;}
-{OP_MUL}     {yylval.aopval = strdup(yytext);return OPMUL;}
+"integer"     {return T_INT;}
+"real"        {return T_REAL;}
+"boolean"     {return T_BOOL;}
+"if"          {return IF_WORD;}
+"then"        {return THEN_WORD;}
+"program"     {return PROGRAM_WORD;}
+"else"        {return ELSE_WORD;}
+"while"	      {return WHILE_WORD;}
+"do"	      {return DO_WORD;}
+"for"	      {return FOR_WORD;}
+"begin"       {return BEGIN_WORD;}
+"end"         {return END_WORD;}
+"var"         {return VAR_WORD;}
+"array"       {return ARRAY_WORD;}
+"of"          {return OF_WORD;}
+"read"		  {return READ_WORD;}
+"print"		  {return PRINT_WORD;}
+{OP_AD}       {yylval.aopval = strdup(yytext);return OPAD;}
+{OP_MUL}      {yylval.aopval = strdup(yytext);return OPMUL;}
 {NUMERO}      {yylval.ival = atoi(yytext);return INT;}
 {FLOAT}       {yylval.fval = atof(yytext);return FLOAT;}
 {ID}          {yylval.idval = strdup(yytext);return IDENTIFIER;}
 {RELACIONAIS} {yylval.aopval = strdup(yytext);return RELATIONAL;}
 {BINARIO}     {if(!strcmp(yytext,"true")){ yylval.bval = 1;} else { yylval.bval = 0;}return BOOL;}
+{ASPAS}		  {return ASPAS;}
 
 
 ";"  { return SEMI_COLON;}

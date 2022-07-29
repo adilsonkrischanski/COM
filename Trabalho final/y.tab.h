@@ -79,7 +79,10 @@ extern int yydebug;
     RIGHT_BRACKET = 285,
     LEFT_BRACKET = 286,
     COLCHETES_FECHA = 287,
-    COLCHETES_ABRE = 288
+    COLCHETES_ABRE = 288,
+    READ_WORD = 289,
+    PRINT_WORD = 290,
+    ASPAS = 291
   };
 #endif
 /* Tokens.  */
@@ -114,6 +117,9 @@ extern int yydebug;
 #define LEFT_BRACKET 286
 #define COLCHETES_FECHA 287
 #define COLCHETES_ABRE 288
+#define READ_WORD 289
+#define PRINT_WORD 290
+#define ASPAS 291
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -145,7 +151,7 @@ union YYSTYPE
 	int sType;
 
 
-#line 149 "y.tab.h"
+#line 155 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

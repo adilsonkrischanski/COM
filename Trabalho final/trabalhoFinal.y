@@ -15,7 +15,7 @@ void yyerror(const char * s);
 extern int yylex();
 extern int yyparse();
 
-char *auxTermo;
+char *auxTermo = NULL;
 char outfileName[] = "input_code.txt";
 extern int lineCounter;
 
@@ -77,6 +77,8 @@ FILE *file;
 %token ATRIBUICAO
 %token RIGHT_BRACKET LEFT_BRACKET
 %token COLCHETES_FECHA COLCHETES_ABRE
+%token READ_WORD PRINT_WORD
+%token ASPAS 
 
 %type <sType> tipoSimples
 %type <id> listaIds
@@ -114,20 +116,20 @@ declaracoesaux: declaracoes
               ;
 
 //string str($2);
-declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipoSimples { 
-    struct listIds *l;
-    l = $2;
-    codeList = NULL;
-    while(l != NULL){
-        if($4 == T_INT){
-            defineVar(l->nome,T_INT);
-        }else if ($4 == T_REAL){
-            defineVar(l->nome,T_REAL);
-        }else if ($4 == T_BOOL){
-            defineVar(l->nome,T_BOOL);
-        }
-        l = l->prox;
-    }
+declaracaoDeVariavel: VAR_WORD listaIds DOIS_PONTOS tipo { 
+    // struct listIds *l;
+    // l = $2;
+    // codeList = NULL;
+    // while(l != NULL){
+    //     if($4 == T_INT){
+    //         defineVar(l->nome,T_INT);
+    //     }else if ($4 == T_REAL){
+    //         defineVar(l->nome,T_REAL);
+    //     }else if ($4 == T_BOOL){
+    //         defineVar(l->nome,T_BOOL);
+    //     }
+    //     l = l->prox;
+    // }
 
 }
 ;
@@ -144,94 +146,106 @@ comando: atribuicao                                      {printf("comando\n");}
        | comandoComposto                                 {printf("comando\n");}
        | comandoFor                                      {printf("comando\n");}
        | comandoWhile                                    {printf("comando\n");}
+       | print                                           {printf("comando\n");}
+       | read                                            {printf("comando\n");}
        ;
 
 listaIds: IDENTIFIER                                     {
-                struct listIds *p, *a;
-                p = (malloc(sizeof(struct listIds)));
-                a = (malloc(sizeof(struct listIds)));
-                p->num = auxIds -1;
-                p->nome = $1;
-                p->prox = codeList;
-                a->num = cont2;
-                cont2++;
-                a->nome = p->nome;
-                a->prox = simbTab;
-                simbTab = a;
-                codeList = p;
-                auxIds++;
+                // struct listIds *p, *a;
+                // p = (malloc(sizeof(struct listIds)));
+                // a = (malloc(sizeof(struct listIds)));
+                // p->num = auxIds -1;
+                // p->nome = $1;
+                // p->prox = codeList;
+                // a->num = cont2;
+                // cont2++;
+                // a->nome = p->nome;
+                // a->prox = simbTab;
+                // simbTab = a;
+                // codeList = p;
+                // auxIds++;
     }
         | listaIds VIRGULA IDENTIFIER                    {
-            struct listIds *p,*a;
-                p = (malloc(sizeof(struct listIds)));
-                a = (malloc(sizeof(struct listIds)));
-                p->num = auxIds -1;
-                p->nome = $3;
-                p->prox = codeList;
-                codeList = p;
-                a->num = cont2;
-                cont2++;
-                a->nome = p->nome;
-                a->prox = simbTab;
-                simbTab = a;
-                auxIds = 1;
-                $$ = codeList;
+            // struct listIds *p,*a;
+            //     p = (malloc(sizeof(struct listIds)));
+            //     a = (malloc(sizeof(struct listIds)));
+            //     p->num = auxIds -1;
+            //     p->nome = $3;
+            //     p->prox = codeList;
+            //     codeList = p;
+            //     a->num = cont2;
+            //     cont2++;
+            //     a->nome = p->nome;
+            //     a->prox = simbTab;
+            //     simbTab = a;
+            //     auxIds = 1;
+            //     $$ = codeList;
     }
         ;
 
-atribuicao: variavel ATRIBUICAO termo                {
-    int a = findVar($1);
-    if(a != -1){
-        fprintf(file, "L_%i:\n", labels);
-        fprintf(file, $3);
-        fprintf(file, "istore %i\n", a);
-        labels++;
-    }
-    printf("atribuicao\n");}
+atribuicao: variavel ATRIBUICAO fator
+            |variavel  ATRIBUICAO  expressaoSimples            {
+            //     int a = findVar($1);
+            //     if(a != -1){
+            //         fprintf(file, "L_%i\n", labels);
+            //         if(strcmp($3->tipo, "INT")==0){
+            //             fprintf(file, "ldc %.0f\n", $3->valor);
+            //         }else if(strcmp($3->tipo, "FLOAT")==0){
+            //             fprintf(file, "ldc %f\n", $3->valor);
+            //         }else if(strcmp($3->tipo, "BOOL")==0){
+            //             fprintf(file, "ldc %.0f\n", $3->valor);
+            //         }else{
+            //             fprintf(file, "iload %.0f\n", $3->valor);
+            //         }
+            //         fprintf(file, "istore %i\n", a);
+            //         labels++;
+            // }
+                printf("atribuicao\n");}
           ;
 
 condicional: IF_WORD expressao THEN_WORD comando condicionalAUX {printf("condicional\n");}
            ;
 
 condicionalAUX: ELSE_WORD comando SEMI_COLON                                  {printf("condicionalAUX\n");}
-              | SEMI_COLON                                        {printf("condicionalAUX\n");}
+              | SEMI_COLON 
               ;
 
-comandoWhile: WHILE_WORD expressaoSimples RELATIONAL expressaoSimples DO_WORD comando       {printf("comando While\n");}
+comandoWhile: DO_WORD listaDeComandos WHILE_WORD LEFT_BRACKET expressao RIGHT_BRACKET SEMI_COLON   {printf("comando While\n");}
             ;
 
-comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON atribuicao RIGHT_BRACKET listaDeComandos     {printf("comando For\n");}
+comandoFor: FOR_WORD LEFT_BRACKET atribuicao SEMI_COLON expressaoSimples RELATIONAL expressaoSimples SEMI_COLON expressaoSimples SEMI_COLON RIGHT_BRACKET  listaDeComandos SEMI_COLON  {printf("comando For\n");}
           ;
 
 expressao: expressaoSimples                              {printf("expressao\n");}
-         | expressaoSimples RELATIONAL expressaoSimples  {printf("expressao\n");}
+         | expressao RELATIONAL expressao  {printf("expressao\n");}
          ;
+
 
 expressaoSimples: expressaoSimples OPAD termo       {printf("EXP SIMPLES \n");}
                 | termo                             {printf("EXP SIMPLES \n");}
                 ;
 
 literal: intlit                                       {printf("Atribuido1\n");
-        struct valorar *p;
-        p=malloc(sizeof(struct valorar));
-        p->valor = $1;
-        p->tipo = strdup("INT");
-        $$ = p;
+        // struct valorar *p;
+        // p=malloc(sizeof(struct valorar));
+        // p->valor = $1;
+        // p->tipo = strdup("INT");
+        // $$ = p;
         }
        | floatlit                                     {printf("Atribuido2\n");
-        struct valorar *p;
-        p=malloc(sizeof(struct valorar));
-        p->valor = $1;
-        p->tipo = strdup("FLOAT");
-        $$ = p;
+        // struct valorar *p;
+        // p=malloc(sizeof(struct valorar));
+        // p->valor = $1;
+        // p->tipo = strdup("FLOAT");
+        // $$ = p;
        }
-       | boollit                                      {printf("Atribuido3\n");
-        struct valorar *p;
-        p=malloc(sizeof(struct valorar));
-        p->valor = $1;
-        p->tipo = strdup("BOOL");
-        $$ = p;
-       }
+       | boollit                                      {printf("Atribuido3\n");}
+    //     struct valorar *p;
+    //     p=malloc(sizeof(struct valorar));
+    //     p->valor = $1;
+    //     p->tipo = strdup("BOOL");
+    //     $$ = p;
+    //    }
        ;
 
 
@@ -246,71 +260,74 @@ boollit: BOOL {$$ = $1;}
 
 
 fator: variavel                                    {printf("VARIAVEL \n");
-        int a = findVar($1);
-        //printf("okk\n");
-        if(a != -1){
-            struct valorar *p;
-            p=malloc(sizeof(struct valorar));
-            p->valor = (float)a;
-            p->tipo = strdup($1);
-            $$ = p;
-        }
+        // int a = findVar($1);
+        // //printf("okk\n");
+        // if(a != -1){
+        //     struct valorar *p;
+        //     p=malloc(sizeof(struct valorar));
+        //     p->valor = (float)a;
+        //     p->tipo = strdup($1);
+        //     $$ = p;
+        // }
     }
-     | literal                                      {printf("VARIAVEL \n");printf("okk\n");$$ = $1;}
-     | LEFT_BRACKET expressao RIGHT_BRACKET         {printf("VARIAVEL \n");}
+     | literal                                      {printf("literal \n");$$ = $1;}
+     | LEFT_BRACKET expressao RIGHT_BRACKET         {printf("expressao \n");}
     ;
 
 seletor: seletoraux COLCHETES_ABRE expressao  COLCHETES_FECHA
-       | vazio               {printf("TIPO \n");}
+       | vazio               {printf("vazio \n");}
        ;
 
 seletoraux: seletor
           ;
 
 termo: termo opmul fator {printf("TERMO\n");
-        if(strcmp($3->tipo, "INT")==0){
-            auxTermo = strcat(auxTermo, toString(1, $3->valor));
-        }else if(strcmp($3->tipo, "FLOAT")==0){
-            auxTermo = strcat(auxTermo, toString(2, $3->valor));
-        }else if(strcmp($3->tipo, "BOOL")==0){
-            auxTermo = strcat(auxTermo, toString(1, $3->valor));
-        }else{
-            auxTermo = strcat(auxTermo, toString(3, $3->valor));
-        }
-        if(strcmp($2, "*")){
-            auxTermo = strcat(auxTermo, "imul\n");
-            $$ = auxTermo;
-        }else if(strcmp($2, "/")){
-            auxTermo = strcat(auxTermo, "imul\n");
-            $$ = auxTermo;
-        }
+        // if(strcmp($3->tipo, "INT")==0){
+        //     fprintf(file, "ldc %.0f\n", $3->valor);
+        // }else if(strcmp($3->tipo, "FLOAT")==0){
+        //     fprintf(file, "ldc %f\n", $3->valor);
+        // }else if(strcmp($3->tipo, "BOOL")==0){
+        //     fprintf(file, "ldc %.0f\n", $3->valor);
+        // }else{
+        //     fprintf(file, "iload %.0f\n", $3->valor);
+        // }
+        // if(strcmp($2, "*")){
+        //     fprintf(file, "imul\n");
+        //     $$ = auxTermo;
+        // }else if(strcmp($2, "/")){
+        //     fprintf(file, "imul\n");
+        //     $$ = auxTermo;
+        // }
     }
     | fator              {printf("TERMO - FATOR\n");
-        printf($1->tipo);
-        if(strcmp($1->tipo, "INT")==0){
-            auxTermo = strdup(toString(1, $1->valor));
-        }else if(strcmp($1->tipo, "FLOAT")==0){
-            auxTermo = strdup(toString(2, $1->valor));
-        }else if(strcmp($1->tipo, "BOOL")==0){
-            auxTermo = strdup(toString(1, $1->valor));
-        }else{
-            auxTermo = strdup(toString(3, $1->valor));
-        }
+        // if(strcmp($1->tipo, "INT")==0){
+        //     fprintf(file, "ldc %.0f\n", $1->valor);
+        // }else if(strcmp($1->tipo, "FLOAT")==0){
+        //     fprintf(file, "ldc %f\n", $1->valor);
+        // }else if(strcmp($1->tipo, "BOOL")==0){
+        //     fprintf(file, "ldc %.0f\n", $1->valor);
+        // }else{
+        //     fprintf(file, "iload %.0f\n", $1->valor);
+        // }
 }
     ;
 
 opmul: OPMUL   {$$ = $1;}
     ;
 
-agregadoAux: COLCHETES_ABRE literal PONTO_PONTO literal COLCHETES_FECHA   {printf("agregado Aux \n");}
+agregadoAux: COLCHETES_ABRE lit COLCHETES_FECHA   {printf("agregado Aux \n");}
     ;
 
-// tipo: tipoAgregado  {printf("TIPO \n");}
-//     |tipoSimples   {printf("TIPO \n");}
-//     ;
+lit: lit VIRGULA literal
+   | literal
+   ;
 
-// tipoAgregado: ARRAY_WORD agregadoAux OF_WORD tipo  {printf("TIPO AGREGADO\n");}
-//     ;
+tipo: tipoAgregado  {printf("TIPO \n");}
+    |tipoSimples   {printf("TIPO \n");}
+    ;
+
+tipoAgregado: ARRAY_WORD agregadoAux OF_WORD tipo  {printf("TIPO AGREGADO\n");}
+    ;
 
 tipoSimples: T_INT {$$=T_INT;printf("TIPO INT\n");}
     | T_REAL       {$$=T_REAL;printf("TIPO REAL\n");}
@@ -325,6 +342,21 @@ variavel: IDENTIFIER seletor {printf("Variavel\n");$$ = $1;}
 vazio: {printf("Vazio\n");}
     ;
 
+
+
+print: PRINT_WORD LEFT_BRACKET ASPAS idd ASPAS RIGHT_BRACKET
+    ;
+
+idd: idd IDENTIFIER
+   | IDENTIFIER
+   | idd variavel
+   | variavel
+   | expressao
+   | idd expressao
+   ;
+
+read: READ_WORD LEFT_BRACKET IDENTIFIER RIGHT_BRACKET  {printf("read\n");}
+    ;
 
 %%
 
@@ -414,7 +446,6 @@ int findVar(char *nome){
     struct listIds *p;
     p = simbTab;
     while(p!=NULL){
-        printf("%s\n", p->nome);
         if(strcmp(p->nome, nome)==0){
             return p->num;
         }
@@ -429,18 +460,4 @@ void printnoj(int var){
     fprintf(file, "iload %i", var);
     fprintf(file, "invokevirtual java/io/PrintStream/println(I)V");
 
-}
-
-char * toString(int i, float v){
-    char *a;
-    if(i == 1){
-        sprintf(a, "%.0f", v);
-        return strcat("ldc \n",a);
-    }else if(i == 2){
-        sprintf(a, "%f", v);
-        return strcat("ldc \n",a);
-    }else{
-        sprintf(a, "%.0f", v);
-        return strcat("ldc \n",a);
-    }
 }
